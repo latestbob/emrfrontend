@@ -3,6 +3,7 @@ import { Router } from 'react-router-dom';
 import Login from './pages/Login';
 import Forgot from './pages/Forgot';
 import Dashboard from './pages/Dashboard';
+import ResetPass from './pages/Reset';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -37,6 +38,18 @@ const routes = [
         component: Dashboard,
         pageTile:`${appName} - Dashboard`
     },
+
+    {
+      id:4,
+      path:'/reset-password/:token',
+      exact:true,
+      auth:false,
+      component: ResetPass,
+      pageTile:`${appName} - Reset Password`
+  },
+
+
+  
 
     // {
     //     id:2,

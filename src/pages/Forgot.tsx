@@ -4,6 +4,10 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 //import { handleForgotPassword } from '../services/authService';
 
+import { forgotPassword } from '../services/authSevice';
+
+import { Bounce, toast } from 'react-toastify';
+
 const Forgot = ():JSX.Element => {
 
     const [email, setEmail] = useState<string>("");
@@ -23,15 +27,53 @@ const Forgot = ():JSX.Element => {
         e.preventDefault();
         setErroMessage("");
 
-        
+        if(!email){
+            toast.error('Email is required', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+                });
+        }
 
         try {
-          // await handleForgotPassword(email);
-           alert("Reset Password Link has been shared to your mail");
+          
+          
+         const result =  await forgotPassword(email);
 
-           navigate('/login');
+         toast.success('Reset Password Link has been shared to your mail', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+            });
+        //    alert("Reset Password Link has been shared to your mail");
+
+           navigate('/');
         } catch (err:any) {
-               setErroMessage(err.message);
+                //setErroMessage(err.message);
+
+               toast.error(`${err.message}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+                });
         }   
 
     }
@@ -60,7 +102,7 @@ const Forgot = ():JSX.Element => {
                                 onChange={handleEmailChange}
                                 type="email"
                                 className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-200 sm:text-sm"
-                                placeholder="Enter your email address"
+                                placeholder="Enter your email address"required
                             />
                         </div>
 
