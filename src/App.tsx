@@ -1,24 +1,23 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRoute from './AppRoute';
+//import { AuthContextProvider } from './context/auth';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
+import { AuthContextProvider } from './contexts/auth';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-  
-        <p className='text-3xl text-amber-300 text-center'>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <> 
+        <Router>
+            <AuthContextProvider>
+               <AppRoute />
+               <ToastContainer />
+            </AuthContextProvider>
+            
+        </Router>
+    </>
   );
 }
 
