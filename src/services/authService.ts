@@ -13,10 +13,12 @@ export async function LoginUser(email: string, password: string) {
        // console.error('Login error:', error.response?.data);
 
         
-        return {
-            status: 'failed',
-            message: error.response?.data?.error || 'An error occurred during login',
-        };
+        // return {
+        //     status: 'failed',
+        //     message: error.response?.data?.error || 'An error occurred during login',
+        // };
+
+        throw new Error(error.response?.data?.error || 'n error occurred during login');
     }
 }
 

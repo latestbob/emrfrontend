@@ -5,7 +5,7 @@ const NavBar = ():JSX.Element => {
     
     return (
         <>
-            <div className="w-72 bg-blue-900 h-screen shadow-md relative">
+            <div className="w-72 bg-cyan-800 h-screen shadow-md relative">
                 <div className="p-6 text-center">
                     <img className='w-[80%] text-center' src="https://famacare.com/img/famacare.png" alt="" />
                 </div>
