@@ -1,6 +1,6 @@
 import React from 'react';
 import { createContext, useState, useEffect,  useContext, ReactNode } from "react";
-import { LoginUser, LogoutUser } from '../services/authSevice';
+import { LoginUser, LogoutUser } from '../services/authService';
 
 import { useNavigate } from 'react-router-dom';
 

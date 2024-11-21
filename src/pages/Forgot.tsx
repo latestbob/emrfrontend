@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 //import { handleForgotPassword } from '../services/authService';
 
-import { forgotPassword } from '../services/authSevice';
+import { forgotPassword } from '../services/authService';
 
 import { Bounce, toast } from 'react-toastify';
 
@@ -81,9 +81,9 @@ const Forgot = ():JSX.Element => {
 
     return (
         <>
-            <section className="flex flex-col justify-center px-5 md:px-0  m-0  overflow-x-hidden bg-blue-900 min-h-screen">
+            <section className="flex flex-col justify-center px-5 md:px-0  m-0  overflow-x-hidden bg-[url('https://res.cloudinary.com/edifice-solutions/image/upload/v1732096027/dashboard-new_i7rtj6.jpg')] bg-cover bg-left-top min-h-screen">
 
-                <div className='bg-white w-full md:w-2/5 rounded-lg min-h-[60vh] md:min-h-[45vh] m-auto py-16 md:py-8'>
+                <div className='bg-white w-full md:w-1/3 rounded-lg min-h-[60vh] md:min-h-[45vh] m-auto py-16 md:py-8'>
 
                         {errorMessage && ( <div className="p-4 mx-3 mb-4 text-sm text-red-800 rounded-lg text-center bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                         <span className="font-medium">Error!</span> {errorMessage}.
@@ -115,7 +115,7 @@ const Forgot = ():JSX.Element => {
 
 
                             <div className="buttondiv text-center">
-                                <button className="btn w-full rounded-md bg-[#c1393a] py-2 px-3 text-white font-sans font-medium text-base">Verify Email</button>
+                                <button className="btn w-full rounded-md bg-[#f36e25] py-2 px-3 text-white font-sans font-medium text-base">Verify Email</button>
                             </div>
 
                             <div className="text-center my-3">
