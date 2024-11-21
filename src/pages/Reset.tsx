@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import { useNavigate, Link, useParams } from 'react-router-dom';
 
-import { verifyToken, resetPassword } from '../services/authSevice';
+import { verifyToken, resetPassword } from '../services/authService';
 import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
 
