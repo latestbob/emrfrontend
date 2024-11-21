@@ -91,12 +91,12 @@ const Header = ({title}: HeaderProps): JSX.Element => {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <Link
+                     to='/change-password'
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       Change Password
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a

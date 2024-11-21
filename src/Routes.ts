@@ -5,6 +5,7 @@ import Forgot from './pages/Forgot';
 import Dashboard from './pages/Dashboard';
 import ResetPass from './pages/Reset';
 import Profile from './pages/Profile';
+import ChangePass from './pages/ChangePass';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -58,6 +59,16 @@ const routes = [
     component: Profile,
     pageTile:`${appName} - My Profile`
 },
+
+{
+  id:6,
+  path:'/change-password',
+  exact:true,
+  auth:true,
+  component: ChangePass,
+  pageTile:`${appName} - Change Password`
+},
+
 
   
 

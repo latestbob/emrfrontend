@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { LoginUser } from '../services/authService';
 
 import { useAuth } from '../contexts/auth';
+import { Bounce, toast } from 'react-toastify';
 
 const Login = ():JSX.Element => {
 
@@ -30,7 +31,7 @@ const Login = ():JSX.Element => {
 
     async function handleSubmit(e:React.FormEvent){
         e.preventDefault();
-        setErrorMessage("");
+       
 
         try {
           
@@ -50,13 +51,33 @@ const Login = ():JSX.Element => {
             
         } else {
             // Set the error message from the response
-            setErrorMessage(res.message);
+            toast.error(`Invalid login credentials`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+                });
         }
 
     
 
         } catch (err:any) {
-            setErrorMessage('An unexpected error occurred');
+            toast.error(`Invalid login credentials`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+                });
         }   
 
     }
