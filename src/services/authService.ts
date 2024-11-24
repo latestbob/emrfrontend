@@ -82,3 +82,17 @@ export async function resetPassword(email:string, password:string){
         throw new Error(error.response?.data?.error || 'Unable to reset password');
     }
 }
+
+//  register member (usable by admin and super admin)
+
+export async function registerMember(firstname:string, lastname:string, email:string, phone:string, dob:string, role:string, gender:string, depart:string, address:string, office:string, office_uuid:string){
+    try {
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/auth/register`, 
+           { firstname, lastname, email, phone, dob, gender, role, department:depart, address, password:"Famacare123**", office, office_uuid}
+          );
+          return response.data;
+    } catch (error:any) {
+        throw new Error(error.response?.data?.error || 'Unable to register a member');
+    }
+}

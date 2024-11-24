@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard';
 import ResetPass from './pages/Reset';
 import Profile from './pages/Profile';
 import ChangePass from './pages/ChangePass';
+import StaffMember from './pages/StaffMember';
+import AddMember from './pages/AddMember';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -68,6 +70,26 @@ const routes = [
   component: ChangePass,
   pageTile:`${appName} - Change Password`
 },
+
+{
+  id:7,
+  path:'/staff-member',
+  exact:true,
+  auth:true,
+  component: StaffMember,
+  pageTile:`${appName} - Staff Members`
+},
+
+{
+  id:8,
+  path:'/add-new-member',
+  exact:true,
+  auth:true,
+  component: AddMember,
+  pageTile:`${appName} - Add New Members`
+},
+
+
 
 
   
