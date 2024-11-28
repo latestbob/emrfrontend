@@ -8,6 +8,8 @@ import Profile from './pages/Profile';
 import ChangePass from './pages/ChangePass';
 import StaffMember from './pages/StaffMember';
 import AddMember from './pages/AddMember';
+import ViewMore from './pages/ViewMore';
+import EditStaff from './pages/EditStaff';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -88,6 +90,26 @@ const routes = [
   component: AddMember,
   pageTile:`${appName} - Add New Members`
 },
+
+
+{
+  id:9,
+  path:'/view-more/:uuid',
+  exact:false,
+  auth:true,
+  component: ViewMore,
+  pageTile:`${appName} - View More`
+},
+
+{
+  id:10,
+  path:'/edit-staff/:uuid',
+  exact:false,
+  auth:true,
+  component: EditStaff,
+  pageTile:`${appName} -Edit Staff Details`
+},
+
 
 
 
