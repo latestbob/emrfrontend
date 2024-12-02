@@ -73,3 +73,25 @@ export async function getUniqueNonClinicalStaff(uuid:string){
         throw new Error(error.response?.data?.error || 'Unable to get User Details');
     }
 }
+
+
+//update unique user details (function by admin and super admin)
+export async function updateUniqueUser(
+    firstname:string, lastname:string, email:string, phone:string, uuid:string, role:string, depart:string, dob:string, gender:string, address:string
+){
+    try {
+        const response = await axios.put(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/user/unique/update`, 
+            { firstname, lastname, email, phone, uuid, role, department:depart, dob, gender, address },
+
+            {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
+          );
+          return response.data;
+    } catch (error:any) {
+        throw new Error(error.response?.data?.error || 'Unable to update Profile');
+    }
+}

@@ -7,13 +7,15 @@ import { useAuth } from "../contexts/auth";
 import NavBar from "../components/navbar";
 import Header from "../components/header";
 
-import { changePassword, getUniqueNonClinicalStaff } from "../services/userService";
+import { changePassword, getUniqueNonClinicalStaff, updateUniqueUser } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
 import { getRoles } from "../services/roleService";
 
 import { getDepartments } from "../services/departmentService";
 import { registerMember } from "../services/authService";
+
+
 
 const EditStaff = (): JSX.Element => {
   const navigate = useNavigate();
@@ -78,10 +80,14 @@ const [depart, setDepart] = useState<string>("");
     setLoading(true);
 
     try {
-      const result = await registerMember(firstname, lastname, email, phone, dob, role, gender, depart, address, office, office_uuid);
+
+      if(uuid){
+        const result = await updateUniqueUser(firstname, lastname, email, phone, uuid, role, depart, dob, gender, address);
+      }
+      
 
       toast.success(
-        "You have successfully registered a staff",
+        "Staff profile updated successfully",
         {
           position: "top-right",
           autoClose: 5000,
