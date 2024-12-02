@@ -10,6 +10,7 @@ import StaffMember from './pages/StaffMember';
 import AddMember from './pages/AddMember';
 import ViewMore from './pages/ViewMore';
 import EditStaff from './pages/EditStaff';
+import ChangeStaffPass from './pages/ChangeStaffPass';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -108,6 +109,16 @@ const routes = [
   auth:true,
   component: EditStaff,
   pageTile:`${appName} -Edit Staff Details`
+},
+
+
+{
+  id:11,
+  path:'/change-pass/:uuid',
+  exact:false,
+  auth:true,
+  component: ChangeStaffPass,
+  pageTile:`${appName} - Change Staff Password`
 },
 
 

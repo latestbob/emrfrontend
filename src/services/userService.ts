@@ -95,3 +95,25 @@ export async function updateUniqueUser(
         throw new Error(error.response?.data?.error || 'Unable to update Profile');
     }
 }
+
+
+//update unique user password  (super admin)
+export async function changeUniquePassword(
+   uuid:string, password:string
+){
+    try {
+        const response = await axios.put(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/user/unique/password/${uuid}`, 
+            { password },
+
+            {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
+          );
+          return response.data;
+    } catch (error:any) {
+        throw new Error(error.response?.data?.error || 'Unable to change staff password');
+    }
+}
