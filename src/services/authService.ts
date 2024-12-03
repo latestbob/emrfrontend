@@ -85,11 +85,11 @@ export async function resetPassword(email:string, password:string){
 
 //  register member (usable by admin and super admin)
 
-export async function registerMember(firstname:string, lastname:string, email:string, phone:string, dob:string, role:string, gender:string, depart:string, address:string, office:string, office_uuid:string){
+export async function registerMember(firstname:string, lastname:string, email:string, phone:string, dob:string, role:string, gender:string, depart:string, address:string, office:string, office_uuid:string, fee:number, aos:string){
     try {
         const response = await axios.post(
             `${process.env.REACT_APP_API_ENDPOINT}/api/auth/register`, 
-           { firstname, lastname, email, phone, dob, gender, role, department:depart, address, password:"Famacare123**", office, office_uuid}
+           { firstname, lastname, email, phone, dob, gender, role, department:depart, address, password:"Famacare123**", office, office_uuid, fee, aos}
           );
           return response.data;
     } catch (error:any) {

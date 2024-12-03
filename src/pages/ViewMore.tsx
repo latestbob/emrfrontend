@@ -159,15 +159,16 @@ useEffect(() => {
       
 
       <div className="buttondiv text-right bg-cyan-900 px-10 py-5 justify-end items-center rounded">
-                <Link
-                  to="/staff-member"
-                  className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
+                <div
+                onClick={() => navigate(-1)}
+
+                  className="cursor-pointer text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">
                     <i className="fa fa-backward"></i>
                   </span>
                   Back 
-                </Link>
+                </div>
               </div>
 
 <br />
@@ -175,7 +176,12 @@ useEffect(() => {
         <div className="w-[80%] m-auto bg-white p-6 rounded-lg shadow-md">
 
           <div className="text-right">
-            <Link to={`/edit-staff/${uuid}`} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link>
+
+            { 
+              fetcheduser.aos ?  <Link to={`/edit-staff/${uuid}?type=clinical`} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link> :
+              <Link to={`/edit-staff/${uuid}`} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link>
+            }
+           
           </div>
 
 
@@ -211,6 +217,16 @@ useEffect(() => {
     </tr>
 
     <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Gender</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.gender}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">DOB</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.dob}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
       <td className="border px-4 py-2 text-gray-600">Role</td>
       <td className="border px-4 py-2 text-gray-800">{fetcheduser.role}</td>
     </tr>
@@ -220,15 +236,23 @@ useEffect(() => {
       <td className="border px-4 py-2 text-gray-800">{fetcheduser.department}</td>
     </tr>
 
-    <tr className="hover:bg-gray-50">
-      <td className="border px-4 py-2 text-gray-600">DOB</td>
-      <td className="border px-4 py-2 text-gray-800">{fetcheduser.dob}</td>
+    {
+      fetcheduser.aos &&  <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Specialization</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.aos}</td>
     </tr>
+    }
 
-    <tr className="hover:bg-gray-50">
-      <td className="border px-4 py-2 text-gray-600">Gender</td>
-      <td className="border px-4 py-2 text-gray-800">{fetcheduser.gender}</td>
+{
+      fetcheduser.fee &&  <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Consultation Fee</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.fee}</td>
     </tr>
+    }
+
+    
+
+    
   </tbody>
 </table>
 }

@@ -152,15 +152,16 @@ async function handleLogOut(){
 
       
       <div className="buttondiv text-right bg-cyan-900 px-10 py-5 justify-end items-center rounded">
-                <Link
-                  to="/staff-member"
-                  className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
+                <div
+                onClick={() => navigate(-1)}
+
+                  className="cursor-pointer text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">
                     <i className="fa fa-backward"></i>
                   </span>
                   Back 
-                </Link>
+                </div>
               </div>
 
 <br />

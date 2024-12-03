@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { LogoutUser } from "../services/authService";
 
@@ -19,6 +19,12 @@ import { registerMember } from "../services/authService";
 
 const EditStaff = (): JSX.Element => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Parse query parameters
+  const searchParams = new URLSearchParams(location.search);
+  const type = searchParams.get("type");
+
 
   const { setToken, setUser, user } = useAuth();
 
@@ -48,6 +54,9 @@ const [depart, setDepart] = useState<string>("");
 
   const[office, setOffice] = useState<string>("");
   const[office_uuid, setOfficeUuid] = useState<string>("");
+  const [aos, setAos] = useState<string>("");
+  const [fee, setFee] = useState<number>(0);
+
 
   const {uuid} = useParams();
 
@@ -82,7 +91,7 @@ const [depart, setDepart] = useState<string>("");
     try {
 
       if(uuid){
-        const result = await updateUniqueUser(firstname, lastname, email, phone, uuid, role, depart, dob, gender, address);
+        const result = await updateUniqueUser(firstname, lastname, email, phone, uuid, role, depart, dob, gender, address, aos, fee);
       }
       
 
@@ -102,7 +111,12 @@ const [depart, setDepart] = useState<string>("");
       );
       //    alert("Reset Password Link has been shared to your mail");
       setLoading(false);
-      navigate('/staff-member');
+      if(type == 'clinical'){
+        navigate("/clinical-staff");
+      }
+      else{
+        navigate("/staff-member");
+      }
     } catch (err: any) {
       //setErroMessage(err.message);
       setLoading(false);
@@ -224,6 +238,14 @@ function handleAddressChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setAddress(e.target.value)
 }
 
+function handleAosChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  setAos(e.target.value);
+}
+
+function handleFeeChange(e: React.ChangeEvent<HTMLInputElement>) {
+  setFee(Number(e.target.value));
+}
+
 
 async function fetchUniqueNonClinicalStaff(){
    
@@ -243,6 +265,8 @@ async function fetchUniqueNonClinicalStaff(){
         setDepart(result.user.department)
         setAddress(result.user.address)
         setGender(result.user.gender)
+        setAos(result.user.aos)
+        setFee(result.user.fee)
       }
     
      
@@ -285,16 +309,17 @@ async function fetchUniqueNonClinicalStaff(){
                 placeholder="Enter your password"
               />
 
-              <div className="buttondiv text-right">
-                <Link
-                  to="/staff-member"
-                  className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
+<div className="buttondiv text-right bg-cyan-900 px-10  justify-end items-center rounded">
+                <div
+                onClick={() => navigate(-1)}
+
+                  className="cursor-pointer text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">
                     <i className="fa fa-backward"></i>
                   </span>
-                  Back
-                </Link>
+                  Back 
+                </div>
               </div>
             </div>
 
@@ -414,11 +439,23 @@ async function fetchUniqueNonClinicalStaff(){
                     >
                         <option value="">Assign Role</option>
 
-                        {roles && roles.map((role) => (
-                            <option key={role._id} value={role.name}>
-                                {role.name}
-                            </option>
-))}
+                        {roles &&
+                        roles
+                            .filter((role) => {
+                                // Filter roles based on type
+                                if (type === 'clinical') {
+                                    return !['super admin', 'administrator', 'receptionist', 'billing and accounts staff', 'it support'].includes(role.name.toLowerCase());
+                                }
+                                else{
+                                  return !['doctor', 'nurse', 'pharmacist', 'radiologist', 'lab technician'].includes(role.name.toLowerCase());
+                                }
+                                return true; // Include all roles if type is not clinical
+                            })
+                            .map((role) => (
+                                <option key={role._id} value={role.name}>
+                                    {role.name}
+                                </option>
+                            ))}
                     </select>
                   </div>
                 </div>
@@ -481,8 +518,108 @@ async function fetchUniqueNonClinicalStaff(){
                                             
                     </select>
                   </div>
+
+                  {type == "clinical" && (
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="lastname"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Area of Specialization
+                      </label>
+                      {/* <select
+                 
+                      
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     
+                    /select> */}
+
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        name=""
+                        id=""
+                        onChange={handleAosChange}
+                        value={aos}
+                       
+                      >
+                        <option value="">Select Specialization</option>
+                        <option value="" disabled selected>
+                          Select specialization
+                        </option>
+                        <option value="General Practitioner">
+                          General Practitioner
+                        </option>
+
+                        <option value="Nurse Practitioner">Nurse Practitioner</option>
+                        <option value="Surgical Nurse">Surgical Nurse</option>
+                        <option value="Gynecologist">Gynecologist</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Psychiatrist">Psychiatrist</option>
+                        <option value="Orthopedic Surgeon">
+                          Orthopedic Surgeon
+                        </option>
+                        <option value="Endocrinologist">Endocrinologist</option>
+                        <option value="Oncologist">Oncologist</option>
+                        <option value="Radiologist">Radiologist</option>
+                        <option value="Anesthesiologist">
+                          Anesthesiologist
+                        </option>
+                        <option value="Urologist">Urologist</option>
+                        <option value="Nephrologist">Nephrologist</option>
+                        <option value="Gastroenterologist">
+                          Gastroenterologist
+                        </option>
+                        <option value="Pulmonologist">Pulmonologist</option>
+                        <option value="Otolaryngologist (ENT Specialist)">
+                          Otolaryngologist (ENT Specialist)
+                        </option>
+                        <option value="Ophthalmologist">Ophthalmologist</option>
+                        <option value="Rheumatologist">Rheumatologist</option>
+                        <option value="Pathologist">Pathologist</option>
+                        <option value="Surgeon (General)">
+                          Surgeon (General)
+                        </option>
+                        <option value="Infectious Disease Specialist">
+                          Infectious Disease Specialist
+                        </option>
+                        <option value="Hematologist">Hematologist</option>
+                        <option value="Allergist/Immunologist">
+                          Allergist/Immunologist
+                        </option>
+                        <option value="Plastic Surgeon">Plastic Surgeon</option>
+                      </select>
+                    </div>
+                  )}
+                
+                  
                   
                 </div>
+
+                {type == 'clinical' && 
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="firstname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Consultation Fee{" "}
+                      <span className="text-gray-700">
+                        (Doctors and Nurses)
+                      </span>
+                    </label>
+                    <input
+                      type="number"
+                      onChange={handleFeeChange}
+                      value={fee}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Enter consultation fee i.e 5000"
+                    />
+                  </div>
+                </div>
+}
 
                 <hr />
 
