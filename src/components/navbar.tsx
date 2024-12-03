@@ -33,12 +33,12 @@ const NavBar = ():JSX.Element => {
                     </Link>
 
                     {/* admin frontdesk */}
-                    <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
-                   <span className='pr-3'><i className='fa fa-user-md text-grey-400'></i></span> Doctors and Nurses
+                    <Link to="/clinical-staff" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
+                   <span className='pr-3'><i className='fa fa-user-md text-grey-400'></i></span> Clinical Staff
                     </Link>
 
                     <Link to="/staff-member" className={`block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white  ${location.pathname == '/staff-member' ? 'bg-[#f36e25] text-white' : 'text-gray-400'}`}>
-                   <span className='pr-3'><i className='fa fa-users text-grey-400'></i></span> Other Staff
+                   <span className='pr-3'><i className='fa fa-users text-grey-400'></i></span> Admin Staff
                     </Link>
 
 

@@ -10,9 +10,9 @@ import Header from "../components/header";
 import { changePassword } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
-import { getNonClinicalStaff } from "../services/userService";
+import { getClinicalStaff } from "../services/userService";
 
-const StaffMembers = (): JSX.Element => {
+const ClinicalStaff = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -24,13 +24,13 @@ const StaffMembers = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const[nonclincialstaff, setNonClinicalStaff] = useState<any[]>([]);
+  const[ clinicalstaff, setNonClinicalStaff] = useState<any[]>([]);
  
   useEffect(() => {
     // Load user data from localStorage if available on initial render
     if (user) {
       setEmail(user.email);
-      fetchNonClinicalStaff();
+      fetchClinicalStaff();
     }
   }, [user]);
 
@@ -115,14 +115,14 @@ const StaffMembers = (): JSX.Element => {
 
   //   handle nonclincial staff  fetch
 
-async function fetchNonClinicalStaff(){
+async function fetchClinicalStaff(){
    
 
     try {
       
       
-     const result =  await getNonClinicalStaff();
-       setNonClinicalStaff(result.nonclinicalstaff);
+     const result =  await getClinicalStaff();
+       setNonClinicalStaff(result.clinicalstaff);
      
     } catch (err:any) {
             //setErroMessage(err.message);
@@ -166,7 +166,7 @@ async function fetchNonClinicalStaff(){
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Administrative Staff" />
+          <Header title="Clinical Staff" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
 
@@ -178,7 +178,7 @@ async function fetchNonClinicalStaff(){
               />
 
                     <div className="buttondiv ">
-                    <Link to="/add-new-member" className="text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                    <Link to="/add-new-member?type=clinical" className="text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                         <span className="pr-4"><i className="fa fa-add"></i></span>
                         Add Member
                         </Link>
@@ -279,6 +279,10 @@ async function fetchNonClinicalStaff(){
                 <th scope="col" className="px-6 py-3">
                     Role
                 </th>
+
+                <th scope="col" className="px-6 py-3">
+                    AOS
+                </th>
                 <th scope="col" className="px-6 py-3">
                     Action
                 </th>
@@ -287,8 +291,8 @@ async function fetchNonClinicalStaff(){
         <tbody>
 
        
-        {nonclincialstaff &&
-        nonclincialstaff.map((staff, index) => {
+        { clinicalstaff &&
+         clinicalstaff.map((staff, index) => {
           return (
             <tr
               key={index}
@@ -313,6 +317,7 @@ async function fetchNonClinicalStaff(){
               <td className="px-6 py-4">{staff.lastname}</td>
               <td className="px-6 py-4">{staff.email}</td>
               <td className="px-6 py-4">{staff.role}</td>
+              <td className="px-6 py-4">{staff.aos}</td>
               <td className="px-6 py-4">
                 <button
                   id="dropdownDefaultButton"
@@ -344,7 +349,7 @@ async function fetchNonClinicalStaff(){
                     </li>
                     <li>
                       <Link
-                        to={`/edit-staff/${staff.uuid}`}
+                        to={`/edit-staff/${staff.uuid}?type=clinical`}
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Edit Details
@@ -388,4 +393,4 @@ async function fetchNonClinicalStaff(){
   );
 };
 
-export default StaffMembers;
+export default ClinicalStaff;
