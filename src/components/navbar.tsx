@@ -7,7 +7,7 @@ const NavBar = ():JSX.Element => {
     const location = useLocation();
     return (
         <>
-            <div className="w-72 bg-cyan-900 min-h-screen shadow-md relative">
+            <div className="w-64 bg-cyan-900 min-h-screen shadow-md relative flex-shrink-0">
                 <div className="p-6 text-center">
                     <img className='w-[80%] text-center' src="https://famacare.com/img/famacare.png" alt="" />
                 </div>
@@ -23,7 +23,7 @@ const NavBar = ():JSX.Element => {
 
 
                    
-                    <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
+                    <Link to="/patients" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
                    <span className='pr-3'><i className='fa fa-users text-grey-400'></i></span> Patients
                     </Link>
 
