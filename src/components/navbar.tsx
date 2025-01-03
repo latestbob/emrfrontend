@@ -17,7 +17,7 @@ const NavBar = ():JSX.Element => {
                     </Link>
 
                     {/* for frontdesk, admin, super admin */}
-                    <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
+                    <Link to="/appointments" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
                    <span className='pr-3'><i className='fa fa fa-calendar text-grey-400'></i></span> Appointments
                     </Link>
 

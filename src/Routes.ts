@@ -16,6 +16,7 @@ import Patient from './pages/Patients';
 import RegiserPatient from './pages/RegisterPatient';
 import PatientViewMore from './pages/ViewPatient';
 import EditPatient from './pages/EditPatient';
+import Appointment from './pages/Appointment';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -172,6 +173,16 @@ const routes = [
   component: EditPatient,
   pageTile:`${appName} - Update Patient Details`
 },
+
+{
+  id:17,
+  path:'/appointments',
+  exact:true,
+  auth:true,
+  component: Appointment,
+  pageTile:`${appName} - Appointments`
+},
+
 
 
 
