@@ -338,10 +338,72 @@ async function fetchRegisteredPatient(){
                     {patient.marital_status}
                 </td>
                 
-                <td className="flex items-center px-6 py-4">
+                {/* <td className="flex items-center px-6 py-4">
                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
-                </td>
+                </td> */}
+
+<td className="px-6 py-4">
+                <button
+                  id="dropdownDefaultButton"
+                  className="text-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+                  type="button"
+                  onClick={() => toggleDropdown(index)} // Pass index to toggleDropdown
+                >
+                  Manage
+                </button>
+
+                {/* Dropdown Menu */}
+                <div
+                  id="dropdown"
+                  className={`z-10 ${
+                    visibleDropdownIndex === index ? "block" : "hidden"
+                  } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
+                >
+                  <ul
+                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    aria-labelledby="dropdownDefaultButton"
+                  >
+                    <li>
+                      <Link
+                        to={`/patient/${patient.upi}`}
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        View More 
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/patient/edit/${patient.upi}`}
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Edit Details
+                      </Link>
+                    </li>
+
+                    <li>
+                      <Link
+                        to='Deactivate'
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Health Records
+                      </Link>
+                    </li>
+
+
+                    <li>
+                      <Link
+                        to='Remove'
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Delete Account
+                      </Link>
+                    </li>
+                    
+                    
+                  </ul>
+                </div>
+              </td>
             </tr>
                     )
                 })
