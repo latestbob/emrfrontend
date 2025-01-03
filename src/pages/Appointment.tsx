@@ -10,9 +10,10 @@ import Header from "../components/header";
 import { changePassword } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
-import { getRegisteredPatients } from "../services/patientService";
+// import { getRegisteredPatients } from "../services/patientService";
+import { getAppointments } from "../services/appointment";
 
-const Patient = (): JSX.Element => {
+const Appointment = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -24,105 +25,37 @@ const Patient = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const[patients, setPatients] = useState<any[]>([]);
+  const[appointments, setAppointments] = useState<any[]>([]);
  
   useEffect(() => {
     // Load user data from localStorage if available on initial render
     if (user) {
       setEmail(user.email);
-      fetchRegisteredPatient();
+      fetchScheduledAppointment();
     }
   }, [user]);
 
-  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {}
-
-  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(e.target.value);
-
-    // Regular expressions to check password criteria
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(
-      password
-    );
-    const isLengthValid = password.length >= 8;
-
-    // Check if all criteria are met
-    setIsValid(
-      hasUpperCase &&
-        hasLowerCase &&
-        hasNumbers &&
-        hasSpecialChars &&
-        isLengthValid
-    );
-  }
+  
 
   //   function handlePhoneChange(e:React.ChangeEvent<HTMLInputElement>){
 
   //     setPhone(e.target.value)
   // }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+ 
 
-    try {
-      const result = await changePassword(email, password);
-
-      toast.success(
-        "Password Updated Successfully, Kindly Login with new password",
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Bounce,
-        }
-      );
-      //    alert("Reset Password Link has been shared to your mail");
-
-      await handleLogOut();
-    } catch (err: any) {
-      //setErroMessage(err.message);
-
-      toast.error(`${err.message}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-    }
-  }
-
-  async function handleLogOut() {
-    await LogoutUser();
-
-    setToken(null);
-    setUser(null);
-
-    navigate("/");
-  }
 
 
   //   handle nonclincial staff  fetch
 
-async function fetchRegisteredPatient(){
+async function fetchScheduledAppointment(){
    
 
     try {
       
       
-     const result =  await getRegisteredPatients();
-       setPatients(result.patients);
+     const result =  await getAppointments();
+       setAppointments(result.appointments);
      
     } catch (err:any) {
             //setErroMessage(err.message);
@@ -166,7 +99,7 @@ async function fetchRegisteredPatient(){
         {/* <!-- Main Content --> */}
         <div className="flex-1 bg-gray-100 min-h-screen">
           {/* <!-- Header --> */}
-          <Header title="Patient Management" />
+          <Header title="Appointment Management" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
 
@@ -180,12 +113,12 @@ async function fetchRegisteredPatient(){
                     <div className="buttondiv ">
                     <Link to="/register-patient" className="text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                         <span className="pr-4"><i className="fa fa-add"></i></span>
-                        Register Patient
+                        Schedule Appointment
                         </Link>
 
                         <button type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                         <span className="pr-4"><i className="fa fa-upload"></i></span>
-                       Import Patient
+                       Import Appointment
                         </button>
                             </div>
             </div>
@@ -274,26 +207,18 @@ async function fetchRegisteredPatient(){
                     </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Title
+                    uuid
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Fullname
+                  Schedule Time
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Email
+                   Patient
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Phone
+                    Purpose / Outcome
                 </th>
-                <th scope="col" className="px-6 py-3">
-                    DOB
-                </th>
-                <th scope="col" className="px-6 py-3">
-                    gender
-                </th>
-                <th scope="col" className="px-6 py-3">
-                    Marital Status
-                </th>
+               
                 <th scope="col" className="px-6 py-3">
                     Action
                 </th>
@@ -303,7 +228,7 @@ async function fetchRegisteredPatient(){
 
 
             {
-                patients && patients.map((patient, index) => {
+                appointments && appointments.map((appoint, index) => {
                     return (
                         <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td className="w-4 p-4">
@@ -314,30 +239,20 @@ async function fetchRegisteredPatient(){
                 </td>
 
                 <td className="px-6 py-4">
-                    {patient.title}
+                    {appoint.uuid}
                 </td>
                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {patient.fullname}
+                    {appoint.visit_date} -  {appoint.scheduled_time}
                 </td>
               
                 
                 <td className="px-6 py-4">
-                   {patient.email}
+                   {appoint.firstname}  - {appoint.lastname}
                 </td>
                 <td className="px-6 py-4">
-                    {patient.phone}
+                    {appoint.purpose}
                 </td>
-                <td className="px-6 py-4">
-                    {patient.dob}
-                </td>
-                <td className="px-6 py-4">
-                    {patient.gender}
-                </td>
-
-                <td className="px-6 py-4">
-                    {patient.marital_status}
-                </td>
-                
+               
                 {/* <td className="flex items-center px-6 py-4">
                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
@@ -366,7 +281,7 @@ async function fetchRegisteredPatient(){
                   >
                     <li>
                       <Link
-                        to={`/patient/${patient.upi}`}
+                        to=''
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         View More 
@@ -374,29 +289,20 @@ async function fetchRegisteredPatient(){
                     </li>
                     <li>
                       <Link
-                        to={`/patient/edit/${patient.upi}`}
+                        to=''
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Edit Details
+                        Update
                       </Link>
                     </li>
 
+                   
                     <li>
                       <Link
-                        to='Deactivate'
+                        to=''
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Health Records
-                      </Link>
-                    </li>
-
-
-                    <li>
-                      <Link
-                        to='Remove'
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Delete Account
+                        Trash
                       </Link>
                     </li>
                     
@@ -438,4 +344,4 @@ async function fetchRegisteredPatient(){
   );
 };
 
-export default Patient;
+export default Appointment;

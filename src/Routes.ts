@@ -14,6 +14,9 @@ import ChangeStaffPass from './pages/ChangeStaffPass';
 import ClinicalStaff from './pages/ClinicalStaff';
 import Patient from './pages/Patients';
 import RegiserPatient from './pages/RegisterPatient';
+import PatientViewMore from './pages/ViewPatient';
+import EditPatient from './pages/EditPatient';
+import Appointment from './pages/Appointment';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -152,6 +155,34 @@ const routes = [
   component: RegiserPatient,
   pageTile:`${appName} - Register New Patient`
 },
+
+{
+  id:15,
+  path:'/patient/:upi',
+  exact:true,
+  auth:true,
+  component: PatientViewMore,
+  pageTile:`${appName} - Patient Details`
+},
+
+{
+  id:16,
+  path:'/patient/edit/:upi',
+  exact:true,
+  auth:true,
+  component: EditPatient,
+  pageTile:`${appName} - Update Patient Details`
+},
+
+{
+  id:17,
+  path:'/appointments',
+  exact:true,
+  auth:true,
+  component: Appointment,
+  pageTile:`${appName} - Appointments`
+},
+
 
 
 
