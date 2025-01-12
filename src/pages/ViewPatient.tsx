@@ -179,7 +179,7 @@ useEffect(() => {
 
             
              
-              <Link to='' className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link>
+              <Link to={`/patient/edit/${fetcheduser.upi}`} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link>
             
            
           </div>
@@ -333,6 +333,27 @@ useEffect(() => {
       <td className="border px-4 py-2 text-gray-600">Sponsor Plan</td>
       <td className="border px-4 py-2 text-gray-800">{fetcheduser.sponsor_plan}</td>
     </tr>
+
+
+    <tr className="col-span-2 text-left font-medium py-5">
+        <th className='text-sm pl-4 py-3'>Allergies</th>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Drug Allergies</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.allergies && fetcheduser.allergies.drugs.join(' , ')}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Food Allergies</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.allergies && fetcheduser.allergies.food.join(' , ')}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Other Allergies</td>
+      <td className="border px-4 py-2 text-gray-800">{fetcheduser.allergies && fetcheduser.allergies.other.join(' , ')}</td>
+    </tr>
+
 
 
 
