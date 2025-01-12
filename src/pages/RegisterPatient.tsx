@@ -16,6 +16,10 @@ import { getDepartments } from "../services/departmentService";
 import { registerMember } from "../services/authService";
 import { registerPatient } from "../services/patientService";
 
+import { drugAllergies } from "../utils/allergies/drugsallergies";
+import { foodallergies } from "../utils/allergies/foodallergies";
+import { otherallergies } from "../utils/allergies/otherallergies";
+
 const RegiserPatient = (): JSX.Element => {
   const navigate = useNavigate();
 
@@ -86,11 +90,22 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
   };
 
 
+  const [drugAllergy, setDrugAllergy] = useState<string[]>([]);
+  const [foodAllergy, setFoodAllergy] = useState<string[]>([]);
+  const [otherAllergy, setOtherAllergy] = useState<string[]>([]);
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     setLoading(true);
+
+    const allergies = {
+      drugs:  drugAllergy,
+      food: foodAllergy,
+      other: otherAllergy
+    };
+    
 
     try {
       const result = await registerPatient(
@@ -120,6 +135,8 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
         dob,
         gender,
         address,
+        allergies
+
         
       );
 
@@ -276,6 +293,173 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
   function handleHeightChange(e: React.ChangeEvent<HTMLInputElement>) {
     setHeight(Number(e.target.value));
   }
+
+
+ 
+
+  const[drugAllergyInputText, setDrugAlleryInputText] = useState<string>("");
+  const[foodAllergyInputText, setFoodAlleryInputText] = useState<string>("");
+  const[otherAllergyInputText, setOtherAlleryInputText] = useState<string>("");
+
+
+
+  function handleDrugAllergyInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setDrugAlleryInputText(e.target.value);
+  }
+
+  function handleFoodAllergyInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setFoodAlleryInputText(e.target.value);
+  }
+
+  function handleOtherAllergyInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setOtherAlleryInputText(e.target.value);
+  }
+
+
+  // hidden fields
+
+  const[showdrugallergyInput, setDrugAllergyInput] = useState<boolean>(false);
+
+  const[showfoodallergyInput, setFoodAllergyInput] = useState<boolean>(false);
+
+  const[showotherallergyInput, setOtherAllergyInput] = useState<boolean>(false);
+
+
+  function addToDrugsAllergy(e: React.ChangeEvent<HTMLSelectElement>){
+    setDrugAllergyInput(false)
+    let allery:string = e.target.value;
+
+
+    if(allery == "Other (Please specify)"){
+      setDrugAllergyInput(true)
+    }
+
+   
+
+    if (
+      allery !== "Other (Please specify)" && 
+      allery !== "" && 
+      !drugAllergy.includes(allery) // Check if it's not already in the list
+    ) {
+      setDrugAllergy([...drugAllergy, allery]); // Add to list
+      setDrugAllergyInput(false); // Optionally hide input field after adding
+    }
+    
+
+
+    // append to drug allergy
+  }
+
+  function addToFoodAllergy(e: React.ChangeEvent<HTMLSelectElement>){
+    setFoodAllergyInput(false)
+    let allery:string = e.target.value;
+
+
+   
+
+    if(allery == "Other (Please specify)"){
+      setFoodAllergyInput(true)
+    }
+
+    // check if alleryAllery exists
+    // if (!foodAllergy.includes(allery) && allery != "Other (Please specify)" && allery !="") {
+    //   setFoodAllergy([...foodAllergy, allery]);
+    //   setFoodAllergyInput(false)
+    // }
+
+    if (
+      allery !== "Other (Please specify)" && 
+      allery !== "" && 
+      !foodAllergy.includes(allery) 
+    ) {
+      setFoodAllergy([...foodAllergy, allery]); // Add to list
+      setFoodAllergyInput(false); // Optionally hide input field after adding
+    }
+    
+
+
+    // append to food allergy
+  }
+
+
+  function addToOtherAllergy(e: React.ChangeEvent<HTMLSelectElement>){
+    setOtherAllergyInput(false)
+    let allery:string = e.target.value;
+
+
+   
+
+    if(allery == "Other (Please specify)"){
+      setOtherAllergyInput(true)
+    }
+
+    
+
+    if (
+      allery !== "Other (Please specify)" && 
+      allery !== "" && 
+      !otherAllergy.includes(allery) 
+    ) {
+      setOtherAllergy([...otherAllergy, allery]); // Add to list
+      setOtherAllergyInput(false); // Optionally hide input field after adding
+    }
+    
+
+
+    // append to other allergy
+  }
+
+  function addToDrugsAllergyInput(e: React.MouseEvent<HTMLButtonElement, MouseEvent>){
+   
+  e.preventDefault();
+
+
+    // check if alleryAllery exists
+    if (!drugAllergy.includes(drugAllergyInputText) && drugAllergyInputText != "") {
+      setDrugAllergy([...drugAllergy, drugAllergyInputText]);
+      // setDrugAllergyInput(false)
+      setDrugAlleryInputText("");
+    }
+
+
+    // append to drug allergy
+  }
+
+
+  function addToFoodAllergyInput(e: React.MouseEvent<HTMLButtonElement, MouseEvent>){
+   
+    e.preventDefault();
+  
+  
+      // check if alleryAllery exists
+      if (!foodAllergy.includes(foodAllergyInputText) && foodAllergyInputText != "") {
+        setFoodAllergy([...foodAllergy, foodAllergyInputText]);
+        // setFoodAllergyInput(false)
+        setFoodAlleryInputText("");
+      }
+  
+  
+      // append to food allergy
+    }
+
+
+    function addToOtherAllergyInput(e: React.MouseEvent<HTMLButtonElement, MouseEvent>){
+   
+      e.preventDefault();
+    
+    
+        // check if alleryAllery exists
+        if (!otherAllergy.includes(otherAllergyInputText) && otherAllergyInputText != "") {
+          setOtherAllergy([...otherAllergy, otherAllergyInputText]);
+          // setFoodAllergyInput(false)
+          setOtherAlleryInputText("");
+        }
+    
+    
+        // append to food allergy
+      }
+    
+  
 
   return (
     <>
@@ -945,6 +1129,215 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
 
 
                 
+                <hr />
+                <p className="text-sm text-blue-800">Allergies</p>
+                <i className="text-sm font-light">Please select the type of allergy from the options below:</i>
+
+                
+
+                {/* allergies */}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="lastname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Drug Allergies
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      name=""
+                      id=""
+                      // onChange={handleGenotypeChange}
+                      // value={genotype}
+
+
+                      onChange={addToDrugsAllergy}
+                      
+                    >
+
+                      <option value="">Select drug allergies</option>
+                        {
+                          drugAllergies.map((allergy, index) => (
+                            <option key={index} value={allergy}>
+                              {allergy}
+                            </option>
+                          ))
+                        }
+                                        
+                    
+                     
+
+                    </select>
+
+                   {
+                    showdrugallergyInput && 
+
+                    <div className="flex justify-between items-center w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2">
+
+                      <input onChange={handleDrugAllergyInput} type="text"placeholder="Free type Drug Allergy"className="w-[85%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2" />
+                      <button onClick={addToDrugsAllergyInput} className="bg-green-600 text-white rounded py-2 px-2 text-sm">Add</button>
+
+                   </div>
+                   }
+
+                   {/* all drugys allergy selected */}
+
+                   <div className="flex">
+                      
+                   
+                      
+                      {drugAllergy.map((allergy, index) => (
+                        <div key={index} className="max-w-1/3 p-2">
+                          <p className="text-sm text-medium mx-3">
+                            {allergy} <span className="text-red-600 cursor-pointer" onClick={() => setDrugAllergy(drugAllergy.filter((item) => item !== allergy))}>x</span>
+                          </p>
+                        </div>
+                      ))}
+
+
+                   </div>
+ 
+
+                   {/*  */}
+
+
+
+                  </div>
+
+
+               
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="firstname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                    Food Allergies
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      name=""
+                      id=""
+                      
+
+
+                       onChange={addToFoodAllergy}
+                      
+                    >
+
+                      <option value="">Select food allergies</option>
+                        {
+                          foodallergies.map((allergy, index) => (
+                            <option key={index} value={allergy}>
+                              {allergy}
+                            </option>
+                          ))
+                        }
+                                        
+                    
+                     
+
+                    </select>
+
+                    {
+                    showfoodallergyInput && 
+
+                    <div className="flex justify-between items-center w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2">
+
+                      <input onChange={handleFoodAllergyInput} type="text"placeholder="Free type Drug Allergy"className="w-[85%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2" />
+                      <button onClick={addToFoodAllergyInput} className="bg-green-600 text-white rounded py-2 px-2 text-sm">Add</button>
+
+                   </div>
+                   }
+
+                  <div className="flex">
+                      
+                   
+                      
+                      {foodAllergy.map((allergy, index) => (
+                        <div key={index} className="max-w-1/3 p-2">
+                          <p className="text-sm text-medium mx-3">
+                            {allergy} <span className="text-red-600 cursor-pointer" onClick={() => setFoodAllergy(foodAllergy.filter((item) => item !== allergy))}>x</span>
+                          </p>
+                        </div>
+                      ))}
+
+
+                   </div>
+
+
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="firstname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                    Other Allergies
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      name=""
+                      id=""
+                      
+
+
+                       onChange={addToOtherAllergy}
+                      
+                    >
+
+                      <option value="">Select other allergies</option>
+                        {
+                          otherallergies.map((allergy, index) => (
+                            <option key={index} value={allergy}>
+                              {allergy}
+                            </option>
+                          ))
+                        }
+                                        
+                    
+                     
+
+                    </select>
+
+                    {
+                    showotherallergyInput && 
+
+                    <div className="flex justify-between items-center w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2">
+
+                      <input onChange={handleOtherAllergyInput} type="text"placeholder="Free type Drug Allergy"className="w-[85%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2" />
+                      <button onClick={addToOtherAllergyInput} className="bg-green-600 text-white rounded py-2 px-2 text-sm">Add</button>
+
+                   </div>
+                   }
+
+                  <div className="flex">
+                      
+                   
+                      
+                      {otherAllergy.map((allergy, index) => (
+                        <div key={index} className="max-w-1/3 p-2">
+                          <p className="text-sm text-medium mx-3">
+                            {allergy} <span className="text-red-600 cursor-pointer" onClick={() => setOtherAllergy(otherAllergy.filter((item) => item !== allergy))}>x</span>
+                          </p>
+                        </div>
+                      ))}
+
+
+                   </div>
+
+
+                  </div>
+                  
+                </div>
+
+
+                {/* end of allergies */}
+
 
 
                 <div className="form-group m-auto w-1/2">
@@ -952,7 +1345,7 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
                     type="submit"
                     className="w-full text-center text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-base px-5 py-3  dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                   >
-                    {loading ? "Loading..." : "Add New Member"}
+                    {loading ? "Loading..." : "Add New Patient"}
                   </button>
                 </div>
               </form>
