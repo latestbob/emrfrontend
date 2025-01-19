@@ -17,6 +17,11 @@ import RegiserPatient from './pages/RegisterPatient';
 import PatientViewMore from './pages/ViewPatient';
 import EditPatient from './pages/EditPatient';
 import Appointment from './pages/Appointment';
+import ScheduleAppointment from './pages/ScheduleAppointment';
+import BillingRecords from './pages/BillingRecord';
+import ViewAppointment from './pages/ViewAppointment';
+import EditAppointment from './pages/EditAppointment';
+import Consultation from './pages/Consultation';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -181,6 +186,56 @@ const routes = [
   auth:true,
   component: Appointment,
   pageTile:`${appName} - Appointments`
+},
+
+
+{
+  id:18,
+  path:'/schedule-appointments',
+  exact:true,
+  auth:true,
+  component: ScheduleAppointment,
+  pageTile:`${appName} - Schedule Appointments`
+},
+
+
+{
+  id:18,
+  path:'/billing-records',
+  exact:true,
+  auth:true,
+  component: BillingRecords,
+  pageTile:`${appName} - Billing Records`
+},
+
+{
+  id:19,
+  path:'/appointment/:uuid',
+  exact:true,
+  auth:true,
+  component: ViewAppointment,
+  pageTile:`${appName} - Appointment Details`
+},
+
+
+
+{
+  id:20,
+  path:'/appointment/edit/:uuid',
+  exact:true,
+  auth:true,
+  component: EditAppointment,
+  pageTile:`${appName} - Update Appointment Details`
+},
+
+
+{
+  id:21,
+  path:'/consultations',
+  exact:true,
+  auth:true,
+  component: Consultation,
+  pageTile:`${appName} - Consultations`
 },
 
 

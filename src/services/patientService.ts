@@ -210,3 +210,24 @@ export async function updateUniquePatient(
 
 
 
+//search user service base  on last name, upi or uuid
+
+
+
+export async function searchUsers(query:string){
+  try {
+      const response = await axios.get(
+          `${process.env.REACT_APP_API_ENDPOINT}/api/patient/search-users?query=${query}`,
+          {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+              },
+          }
+        );
+        return response.data;
+  } catch (error:any) {
+      throw new Error(error.response?.data?.error || 'Unable to get find patients');
+  }
+}
+
+
