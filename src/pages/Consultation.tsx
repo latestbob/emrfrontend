@@ -12,8 +12,9 @@ import { changePassword } from "../services/userService";
 import { Bounce, toast } from "react-toastify";
 // import { getRegisteredPatients } from "../services/patientService";
 import { getAppointments } from "../services/appointment";
+import { getUniqueConsultation } from "../services/consultationService";
 
-const Appointment = (): JSX.Element => {
+const Consultations = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -53,9 +54,11 @@ async function fetchScheduledAppointment(){
 
     try {
       
-      
-     const result =  await getAppointments();
-       setAppointments(result.appointments);
+      if(user){
+        const result =  await getUniqueConsultation(user.uuid);
+       setAppointments(result.appointment);
+      }
+     
      
     } catch (err:any) {
             //setErroMessage(err.message);
@@ -99,27 +102,24 @@ async function fetchScheduledAppointment(){
         {/* <!-- Main Content --> */}
         <div className="flex-1 bg-gray-100 min-h-screen">
           {/* <!-- Header --> */}
-          <Header title="Appointment Management" />
+          <Header title="Consultations" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
 
-          <div className="flex bg-cyan-900 px-10 py-5 justify-between items-center rounded">
-              <input
+          <div className="flex bg-cyan-900 px-10 py-5 justify-end items-center rounded">
+              {/* <input
                
                 className="mt-1 block w-1/2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-200 sm:text-sm"
                 placeholder="Search by name, gender, role"
-              />
+              /> */}
 
                     <div className="buttondiv ">
-                    <Link to="/schedule-appointments" className="text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
-                        <span className="pr-4"><i className="fa fa-add"></i></span>
-                        Schedule Appointment
-                        </Link>
+                   
 
-                        <button type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                        <Link to='/dashboard' type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                         <span className="pr-4"><i className="fa fa-upload"></i></span>
-                       Import Appointment
-                        </button>
+                      Back To Dashboard
+                        </Link>
                             </div>
             </div>
 
@@ -215,13 +215,16 @@ async function fetchScheduledAppointment(){
                 <th scope="col" className="px-6 py-3">
                    Patient
                 </th>
+
+                <th scope="col" className="px-6 py-3">
+                    Vist Type
+                </th>
+
                 <th scope="col" className="px-6 py-3">
                     Purpose / Outcome
                 </th>
 
-                <th scope="col" className="px-6 py-3">
-                    Consultant
-                </th>
+               
                
                 <th scope="col" className="px-6 py-3">
                     Action
@@ -245,21 +248,24 @@ async function fetchScheduledAppointment(){
                 <td className="px-6 py-4">
                     {appoint.uuid}
                 </td>
-                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <td scope="row" className="px-6 py-4">
                     {appoint.visit_date} -  {appoint.scheduled_time}
                 </td>
               
                 
-                <td className="px-6 py-4">
-                   {appoint.firstname}  - {appoint.lastname}
+                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                   {appoint.firstname + ' ' + appoint.lastname + ' - ' + appoint.upi}
                 </td>
+
+                <td className="px-6 py-4">
+                    {appoint.visit_type}
+                </td>
+
                 <td className="px-6 py-4">
                     {appoint.purpose}
                 </td>
 
-                <td className="px-6 py-4">
-                    {appoint.consultant}
-                </td>
+                
                
                 {/* <td className="flex items-center px-6 py-4">
                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
@@ -352,4 +358,4 @@ async function fetchScheduledAppointment(){
   );
 };
 
-export default Appointment;
+export default Consultations;
