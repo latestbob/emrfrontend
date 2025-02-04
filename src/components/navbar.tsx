@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/auth';
 
@@ -8,9 +8,21 @@ const NavBar = (): JSX.Element => {
     const { user } = useAuth();
 
     const location = useLocation();
+
+    const [showDrop, setShowDrop] = useState<boolean>(false);
+
+
+    function toggleUtility(){
+
+        setShowDrop(!showDrop);
+
+    }
+
     return (
         <>
 
+{
+    user && 
 
             <div className="w-64 bg-cyan-900 min-h-screen shadow-md relative flex-shrink-0">
                 <div className="p-6 text-center">
@@ -77,7 +89,7 @@ const NavBar = (): JSX.Element => {
 
 
 
-                    <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
+                    <Link to="/services" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
                         <span className='pr-3'><i className='fa fa-server text-grey-400'></i></span> Services
                     </Link>
 
@@ -100,6 +112,24 @@ const NavBar = (): JSX.Element => {
                     </Link>
 
                     )}
+
+
+
+                    
+                    {(user.role === 'Administrator' || user.role === 'Super Admin') && (
+                        <div className="relative group">
+                            <Link to="#" className="block text-[15px] py-3 px-4 rounded  hover:bg-gray-700 hover:text-white text-gray-400">
+                                <span className='pr-3'><i className='fa fa-wrench text-grey-400'></i></span> Utilities <span onClick={toggleUtility} className={`fa ${showDrop ? 'fa-caret-down' : 'fa-caret-up'} ml-20`}></span>
+                            </Link>
+                            <div className={`absolute left-0 ${showDrop ? 'hidden': ''} mt-2 w-full bg-cyan-900 shadow-md`}>
+                                <Link to="/sponsors" className="block text-sm py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white font-bold">
+                                    <span className='pr-3'><i className='fa fa-handshake-o text-grey-400'></i></span> Sponsors
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+
+
                    
                     <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
                         <span className='pr-3'><i className='fa fa-bar-chart text-grey-400'></i></span> Reports
@@ -117,7 +147,7 @@ const NavBar = (): JSX.Element => {
 
                 </nav>
             </div>
-
+}
         </>
     )
 }

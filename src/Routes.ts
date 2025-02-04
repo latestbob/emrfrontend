@@ -22,6 +22,12 @@ import BillingRecords from './pages/BillingRecord';
 import ViewAppointment from './pages/ViewAppointment';
 import EditAppointment from './pages/EditAppointment';
 import Consultation from './pages/Consultation';
+import ConsultView from './pages/ConsultView';
+import Sponsors from './pages/Sponsor';
+import AddSponsor from './pages/AddSponsor';
+import AddSponsorPage from './pages/AddSponsor';
+import EditSponsorPage from './pages/EditSponsor';
+import Services from './pages/Services';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -236,6 +242,56 @@ const routes = [
   auth:true,
   component: Consultation,
   pageTile:`${appName} - Consultations`
+},
+
+
+
+{
+  id:22,
+  path:'/consultview/:uuid',
+  exact:true,
+  auth:true,
+  component: ConsultView,
+  pageTile:`${appName} - Consultation Details`
+},
+
+
+{
+  id:23,
+  path:'/sponsors',
+  exact:true,
+  auth:true,
+  component: Sponsors,
+  pageTile:`${appName} - Sponsors`
+},
+
+
+{
+  id:24,
+  path:'/add-sponsor',
+  exact:true,
+  auth:true,
+  component: AddSponsorPage,
+  pageTile:`${appName} - Add Sponsors`
+},
+
+
+{
+  id:25,
+  path:'/sponsor/:uuid',
+  exact:true,
+  auth:true,
+  component: EditSponsorPage,
+  pageTile:`${appName} - Edit Sponsor`
+},
+
+{
+  id:25,
+  path:'/services',
+  exact:true,
+  auth:true,
+  component: Services,
+  pageTile:`${appName} - Services`
 },
 
 
