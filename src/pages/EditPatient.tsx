@@ -19,6 +19,8 @@ import { getUniquePatient, registerPatient, updateUniquePatient } from "../servi
 import { drugAllergies } from "../utils/allergies/drugsallergies";
 import { foodallergies } from "../utils/allergies/foodallergies";
 import { otherallergies } from "../utils/allergies/otherallergies";
+import { getAllSponsors } from "../services/sponsorService";
+import { getAllSponsorPlans } from "../services/sponsorService";
 
 
 
@@ -42,6 +44,9 @@ const EditPatient = (): JSX.Element => {
   const [department, setDepartment] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const[fetcheduser, setFetchUser]=useState<any>({});
+  const [sponsors, setAllSponspors] = useState<any[]>([]);
+  const [sponsorplans, setAllSponsporPlans] = useState<any[]>([]);
+
   //   form values
 
   const [title, setTitle] = useState<string>("");
@@ -87,10 +92,19 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
       setOffice(user.office);
       setOfficeUuid(user.office_uuid);
       fetchUniquePatient();
-
+      fetchAllSponsor();
       
     }
   }, [user]);
+
+   async function fetchAllSponsor(){
+  
+      const result = await getAllSponsors();
+      const plans = await getAllSponsorPlans();
+  
+      setAllSponspors(result.sponsors);
+      setAllSponsporPlans(plans.plans);
+    }
 
   const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGender(event.target.value);
@@ -1160,7 +1174,10 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
                       
                     >
                       <option value="">Choose</option>
-                      <option value="Famacare HMO">Famacare HMO</option>
+                      {sponsors.map((sponsor, index) => (
+                      <option key={index} value={sponsor.name}>{sponsor.name}</option>
+                    ))}
+                    
                     
                     
                      
@@ -1184,7 +1201,9 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
                       
                     >
                       <option value="">Choose</option>
-                      <option value="Famacare HMO">Famacare HMO</option>
+                      {sponsorplans.map((plan, index) => (
+                        <option key={index} value={plan.name}>{plan.name}</option>
+                      ))}
                     
                     
                      

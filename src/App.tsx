@@ -6,14 +6,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 
 import { AuthContextProvider } from './contexts/auth';
+import { DiagnosisContextProvider } from './contexts/diagnosis';
 
 function App() {
   return (
     <> 
         <Router>
             <AuthContextProvider>
+              <DiagnosisContextProvider>
                <AppRoute />
                <ToastContainer />
+               </DiagnosisContextProvider>
             </AuthContextProvider>
             
         </Router>

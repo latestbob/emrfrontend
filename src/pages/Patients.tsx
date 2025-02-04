@@ -372,14 +372,25 @@ async function fetchRegisteredPatient(){
                         View More 
                       </Link>
                     </li>
-                    <li>
+
+                    {["Super Admin", "Administrator", "Receptionist"].includes(user.role) && (
+                      <li>
+                        <Link
+                          to={`/patient/edit/${patient.upi}`}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Edit Details
+                        </Link>
+                      </li>
+                    )}
+                    {/* <li>
                       <Link
                         to={`/patient/edit/${patient.upi}`}
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Edit Details
                       </Link>
-                    </li>
+                    </li> */}
 
                     <li>
                       <Link
@@ -391,14 +402,18 @@ async function fetchRegisteredPatient(){
                     </li>
 
 
-                    <li>
-                      <Link
+                    
+
+                    {["Super Admin", "Administrator", "Receptionist"].includes(user.role) && (
+                      <li>
+                        <Link
                         to='Remove'
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Delete Account
                       </Link>
-                    </li>
+                      </li>
+                    )}
                     
                     
                   </ul>
