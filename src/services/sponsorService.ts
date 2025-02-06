@@ -140,3 +140,25 @@ export async function updateUniqueSponsor(
     );
   }
 }
+
+
+//get unique plan by name
+
+export async function getUniquePlanByName(name:string) {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/sponsor/fetch/plan/${name}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to get sponsor plan"
+    );
+  }
+}

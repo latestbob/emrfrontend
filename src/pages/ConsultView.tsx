@@ -30,21 +30,26 @@ import { symptons } from "../utils/allergies/symptoms";
 import { familyHistoryData } from "../utils/familyHistory";
 import { socialHistoryData } from "../utils/socialHistory";
 
-
 import { useDiagnosis } from "../contexts/diagnosis";
+import { getUniquePlanByName } from "../services/sponsorService";
+import {
+  getImagingByPlanCode,
+  getInvestigationByPlanCode,
+} from "../services/Service";
 
 const ConsultView = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { diagnoses } = useDiagnosis();
 
-
-
   const { uuid = "" } = useParams();
 
   const { setToken, setUser, user } = useAuth();
 
   const [isValid, setIsValid] = useState(false);
+  const [investigations, setInvestigations] = useState<any[]>([]);
+
+  const [imagings, setImagings] = useState<any[]>([]);
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -67,42 +72,90 @@ const ConsultView = (): JSX.Element => {
 
   const [symptomQueary, setSymptomQuery] = useState<string>("");
   const [diagnosisQueary, setDiagnosisQuery] = useState<string>("");
+  const [investigationQueary, setInvestigationQuery] = useState<string>("");
+  const [imagingQueary, setImagingQuery] = useState<string>("");
 
   const [filteredSymptoms, setFilteredSymptoms] = useState<string[]>([]);
+
+  const [plancode, setPlanCode] = useState<string>("");
 
   interface DiagnosisType {
     code: string;
     name: string;
-    
-}
+  }
 
-type selectedDiagnosisType = {
-  name: string;
-  suspected: boolean;
-};
+  type selectedDiagnosisType = {
+    name: string;
+    suspected: boolean;
+  };
 
-  const [filteredDiagnosis, setFilteredDiagnosis] = useState<DiagnosisType[]>([]);
+  type selectedInvestigationType = {
+    name: string;
+    amount: number;
+  };
+
+  const [filteredDiagnosis, setFilteredDiagnosis] = useState<DiagnosisType[]>(
+    []
+  );
+  const [filteredInvestigation, setFilteredInvestigation] = useState<any[]>([]);
+
+  const [filteredImaging, setFilteredImaging] = useState<any[]>([]);
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
 
-  const [selectedDiagnosis, setSelectedDiagnosis] = useState<selectedDiagnosisType[]>([]);
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState<
+    selectedDiagnosisType[]
+  >([]);
+
+  const [selectedInvestigation, setSelectedInvestigation] = useState<
+    selectedInvestigationType[]
+  >([]);
+
+  const [selectedImaging, setSelectedImaging] = useState<
+    selectedInvestigationType[]
+  >([]);
 
   useEffect(() => {
     getFilterSymptoms();
   }, [symptomQueary]);
 
-
   useEffect(() => {
     getFilterDiagnosis();
+
+    console.log(diagnoses.length);
   }, [diagnosisQueary]);
 
+  useEffect(() => {
+    getInvestigations();
+    getFilterInvestigation();
+  }, [investigationQueary]);
+
+  useEffect(() => {
+    getImagings();
+    getFilterImaging();
+  }, [imagingQueary]);
 
   const handleSymptomQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSymptomQuery(e.target.value);
   };
 
-  const handleDiagnosisQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDiagnosisQueryChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setDiagnosisQuery(e.target.value);
+
+   
+  };
+
+  const handleInvestigationQueryChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInvestigationQuery(e.target.value);
+    console.log(investigationQueary);
+  };
+
+  const handleImagingQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImagingQuery(e.target.value);
   };
 
   function getFilterSymptoms() {
@@ -117,27 +170,76 @@ type selectedDiagnosisType = {
   }
 
 
+
   function getFilterDiagnosis() {
     if (diagnosisQueary.length > 2) {
       const filtered = diagnoses
-      .filter((dia) =>
-        dia.name.toLowerCase().includes(diagnosisQueary.toLowerCase())
-      )
-      .slice(0, 15); //
+        .filter((dia) =>
+          dia.name.toLowerCase().includes(diagnosisQueary.toLowerCase())
+        )
+        .slice(0, 15); //
       setFilteredDiagnosis(filtered);
     } else {
-      setFilteredSymptoms([]);
+      setFilteredDiagnosis([]);
     }
   }
 
-  
+  function getFilterInvestigation() {
+    if (investigationQueary.length > 2 && investigations.length > 0) {
+      const filtered = investigations
+        .filter((ini) =>
+          ini.name.toLowerCase().includes(investigationQueary.toLowerCase())
+        )
+        .slice(0, 15); //
+      setFilteredInvestigation(filtered);
+
+      console.log(filtered);
+
+    } else {
+      setFilteredInvestigation([]);
+    }
+  }
 
 
 
 
+function getFilterImaging() {
+  if (imagingQueary.length > 2 && imagings.length > 0) {
+    const filtered = imagings
+      .filter((img) =>
+        img.name.toLowerCase().includes(imagingQueary.toLowerCase())
+      )
+      .slice(0, 15);
+    setFilteredImaging(filtered);
+    console.log(filtered)
+  } else {
+    setFilteredImaging([]);
+  }
+}
 
+  useEffect(() => {
+    // getInvestigations();
+  }, [plancode]);
 
   //   get appoinmtment
+
+  async function getInvestigations() {
+    if (plancode) {
+      const investigationResult = await getInvestigationByPlanCode(plancode);
+
+      setInvestigations(investigationResult.investigations);
+    }
+  }
+
+  async function getImagings() {
+    if (plancode) {
+      const imagingResult = await getImagingByPlanCode(plancode);
+  
+      // console.log(imagingResult.imaging);
+  
+      setImagings(imagingResult.imaging);
+    }
+  }
 
   async function fetchUniqueAppointment() {
     try {
@@ -169,6 +271,25 @@ type selectedDiagnosisType = {
         setDrugAllergy(patientresult.patient.allergies.drugs);
         setFoodAllergy(patientresult.patient.allergies.food);
         setOtherAllergy(patientresult.patient.allergies.other);
+
+        const plancodeResult = await getUniquePlanByName(
+          patientresult.patient.sponsor_plan
+        );
+
+        setPlanCode(plancodeResult.plan.plan_code);
+
+        console.log(plancode);
+
+        //  if(plancodeResult){
+        //   const investigationResult = await getInvestigationByPlanCode(patientresult.patient.sponsor_plan);
+        //   setInvestigations(investigationResult.investigations);
+        //  }
+
+        // if(plancode){
+        //   const investigationResult = await getInvestigationByPlanCode(patientresult.patient.sponsor_plan);
+        //   setInvestigations(investigationResult.investigations);
+
+        // }
       }
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -663,8 +784,6 @@ type selectedDiagnosisType = {
     // append to food allergy
   }
 
-
-
   function addToSelectedDiagnosis(diagnosis: DiagnosisType) {
     if (!selectedDiagnosis.some((d) => d.name === diagnosis.name)) {
       setSelectedDiagnosis([
@@ -673,6 +792,28 @@ type selectedDiagnosisType = {
       ]);
 
       setDiagnosisQuery("");
+    }
+  }
+
+  function addToSelectedInvestigations(investigate: any) {
+    if (!selectedInvestigation.some((d) => d.name === investigate.name)) {
+      setSelectedInvestigation([
+        ...selectedInvestigation,
+        { name: investigate.name, amount: investigate.price },
+      ]);
+
+      setInvestigationQuery("");
+    }
+  }
+
+  function addToSelectedImagings(image: any) {
+    if (!selectedImaging.some((d) => d.name === image.name)) {
+      setSelectedImaging([
+        ...selectedImaging,
+        { name: image.name, amount: image.price },
+      ]);
+
+      setImagingQuery("");
     }
   }
 
@@ -730,13 +871,25 @@ type selectedDiagnosisType = {
     // append to food allergy
   }
 
-
   const clearFilteredDiagnosis = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setFilteredDiagnosis([]);
     setDiagnosisQuery("");
   };
 
+  const clearFilteredInvestigation = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    setFilteredInvestigation([]);
+    setInvestigationQuery("");
+  };
+
+  const clearFilteredImaging = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setFilteredImaging([]);
+    setImagingQuery("");
+  };
 
   return (
     <>
@@ -1178,9 +1331,7 @@ type selectedDiagnosisType = {
 
                                   onChange={addToFamilyHistory}
                                 >
-                                  <option value="">
-                                   
-                                  </option>
+                                  <option value=""></option>
                                   {familyHistoryData.map((fam, index) => (
                                     <option key={index} value={fam}>
                                       {fam}
@@ -1245,9 +1396,7 @@ type selectedDiagnosisType = {
 
                                   onChange={addToSocialHistory}
                                 >
-                                  <option value="">
-                                   
-                                  </option>
+                                  <option value=""></option>
                                   {socialHistoryData.map((social, index) => (
                                     <option key={index} value={social}>
                                       {social}
@@ -1330,64 +1479,59 @@ type selectedDiagnosisType = {
 
                         {showprocedures && (
                           <div>
-                             <div className="space-y-2">
-                                <label
-                                  htmlFor="firstname"
-                                  className="block text-sm font-medium text-blue-700"
-                                >
-                                  Diagnosis
-                                  <span className="text-red-500">*</span>
-                                </label>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="firstname"
+                                className="block text-sm font-medium text-blue-700"
+                              >
+                                Diagnosis
+                                <span className="text-red-500">*</span>
+                              </label>
 
-                                <div className="flex justify-between items-center">
-                                  <input
-                                    type="text"
-                                    onChange={handleDiagnosisQueryChange}
-                                    value={diagnosisQueary}
+                              <div className="flex justify-between items-center">
+                                <input
+                                  type="text"
+                                  onChange={handleDiagnosisQueryChange}
+                                  value={diagnosisQueary}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  placeholder="Search Diagnosis"
+                                />
 
-                                    
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    placeholder="Search Diagnosis"
-                                  />
-
-                                 {
-                                  filteredDiagnosis.length > 0 && <button
-                                  onClick={clearFilteredDiagnosis}
+                                {filteredDiagnosis.length > 0 && (
+                                  <button
+                                    onClick={clearFilteredDiagnosis}
                                     className="ml-2 text-cyan-900 font-bold text-sm cursor-pointer"
                                   >
                                     Clear
                                   </button>
-                                 } 
-                                {diagnosisQueary.length > 2 && filteredDiagnosis.length > 0 && (
-                                  <ul className="absolute bg-white border border-gray-300 rounded-md shadow-lg mt-1 w-[45%] z-10">
-                                    {filteredDiagnosis.map((result, index) => (
-                                      <li
-                                        key={index}
-                                        className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                        onClick={() => {
-                                          addToSelectedDiagnosis(result)
-                                          setFilteredDiagnosis([]);
-                                        }}
-                                      >
-                                        {result.name}
-                                      </li>
-                                    ))}
-                                  </ul>
                                 )}
+                                {diagnosisQueary.length > 2 &&
+                                  filteredDiagnosis.length > 0 && (
+                                    <ul className="absolute bg-white border border-gray-300 rounded-md shadow-lg mt-1 w-[45%] z-10">
+                                      {filteredDiagnosis.map(
+                                        (result, index) => (
+                                          <li
+                                            key={index}
+                                            className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                                            onClick={() => {
+                                              addToSelectedDiagnosis(result);
+                                              setFilteredDiagnosis([]);
+                                            }}
+                                          >
+                                            {result.name}
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+                                  )}
+                              </div>
+                            </div>
 
-                               
-
-
-                                </div>
-
-                                </div>
-
-                                 <div className="flex-col w-full">
+                            <div className="flex-col w-full">
                               {selectedDiagnosis.map((dia, index) => (
                                 <div key={index} className="w-full p-2">
                                   <p className="text-sm text-medium mx-3">
                                     {dia.name}{" "}
-
                                     <input
                                       className="mycheck"
                                       type="checkbox"
@@ -1396,13 +1540,18 @@ type selectedDiagnosisType = {
                                         setSelectedDiagnosis(
                                           selectedDiagnosis.map((item) =>
                                             item.name === dia.name
-                                              ? { ...item, suspected: !item.suspected }
+                                              ? {
+                                                  ...item,
+                                                  suspected: !item.suspected,
+                                                }
                                               : item
                                           )
                                         );
                                       }}
                                     />
-                                    <span className="text-xs font-bold mr-3 text-cyan-600">Suspected  </span>
+                                    <span className="text-xs font-bold mr-3 text-cyan-600">
+                                      Suspected{" "}
+                                    </span>
                                     <span
                                       className="text-red-600 cursor-pointer"
                                       onClick={() =>
@@ -1418,48 +1567,153 @@ type selectedDiagnosisType = {
                                   </p>
                                 </div>
                               ))}
-                            </div> 
-
+                            </div>
 
                             <br />
 
                             <div className="space-y-2">
-                             
-                                  <label
-                                  htmlFor="firstname"
-                                  className="block text-sm font-medium text-blue-700"
-                                >
-                            
+                              <label
+                                htmlFor="firstname"
+                                className="block text-sm font-medium text-blue-700"
+                              >
                                 Investigations
                               </label>
                               <input
                                 type="text"
                                 id="mainSymptoms"
-                                // onChange={(e) => setMainSymptoms(e.target.value)}
-                                // value={mainSymptoms}
+                                onChange={handleInvestigationQueryChange}
+                                value={investigationQueary}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                               />
+
+                              {filteredInvestigation.length > 0 && (
+                                <button
+                                  onClick={clearFilteredInvestigation}
+                                  className="ml-2 text-cyan-900 font-bold text-sm cursor-pointer"
+                                >
+                                  Clear
+                                </button>
+                              )}
+
+                              {investigationQueary.length > 2 &&
+                                filteredInvestigation.length > 0 && (
+                                  <ul className="absolute bg-white border border-gray-300 rounded-md shadow-lg mt-1 w-[45%] z-10">
+                                    {filteredInvestigation.map(
+                                      (result, index) => (
+                                        <li
+                                          key={index}
+                                          className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                                          onClick={() => {
+                                            addToSelectedInvestigations(result);
+                                            setFilteredInvestigation([]);
+                                          }}
+                                        >
+                                          {result.name}
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                )}
+
+                              <div className="flex-col w-full">
+                                {selectedInvestigation.map((ini, index) => (
+                                  <div key={index} className="w-full p-2">
+                                    <p className="text-sm text-medium mx-3">
+                                      {ini.name}{" "}
+                                      <span className="text-xs font-bold mr-3 text-cyan-600">
+                                        {ini.amount}{" "}
+                                      </span>
+                                      <span
+                                        className="text-red-600 cursor-pointer"
+                                        onClick={() =>
+                                          setSelectedInvestigation(
+                                            selectedInvestigation.filter(
+                                              (item) => item !== ini
+                                            )
+                                          )
+                                        }
+                                      >
+                                        <i className="fa fa-times"></i>
+                                      </span>
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
 
                             <br />
 
-                            <div className="flex items-center space-x-4">
+                            <div className="space-y-2">
                               <label
                                 htmlFor="mainSymptoms"
-                                className="block w-[20%] text-sm font-medium text-blue-700"
+                                className="block  text-sm font-medium text-blue-700"
                               >
                                 Imaging
                               </label>
                               <input
                                 type="text"
                                 id="mainSymptoms"
-                                // onChange={(e) => setMainSymptoms(e.target.value)}
-                                // value={mainSymptoms}
-                                className="w-[70%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                onChange={handleImagingQueryChange}
+                                value={imagingQueary}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                               />
+
+                              {filteredImaging.length > 0 && (
+                                <button
+                                  onClick={clearFilteredImaging}
+                                  className="ml-2 text-cyan-900 font-bold text-sm cursor-pointer"
+                                >
+                                  Clear
+                                </button>
+                              )}
+
+                              {imagingQueary.length > 2 &&
+                                filteredImaging.length > 0 && (
+                                  <ul className="absolute bg-white border border-gray-300 rounded-md shadow-lg mt-1 w-[45%] z-10">
+                                    {filteredImaging.map((result, index) => (
+                                      <li
+                                        key={index}
+                                        className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                                        onClick={() => {
+                                          addToSelectedImagings(result);
+                                          setFilteredImaging([]);
+                                        }}
+                                      >
+                                        {result.name}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+
+                              <div className="flex-col w-full">
+                                {selectedImaging.map((image, index) => (
+                                  <div key={index} className="w-full p-2">
+                                    <p className="text-sm text-medium mx-3">
+                                      {image.name}{" "}
+                                      <span className="text-xs font-bold mr-3 text-cyan-600">
+                                        {image.amount}{" "}
+                                      </span>
+                                      <span
+                                        className="text-red-600 cursor-pointer"
+                                        onClick={() =>
+                                          setSelectedImaging(
+                                            selectedImaging.filter(
+                                              (item) => item !== image
+                                            )
+                                          )
+                                        }
+                                      >
+                                        <i className="fa fa-times"></i>
+                                      </span>
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <br />
+
+                            {/* <div className="space-y-2">
                               <label
                                 htmlFor="comment"
                                 className="block text-sm font-medium text-gray-700"
@@ -1473,7 +1727,7 @@ type selectedDiagnosisType = {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 rows={4}
                               />
-                            </div>
+                            </div> */}
                           </div>
                         )}
 
@@ -1512,6 +1766,13 @@ type selectedDiagnosisType = {
                               <span className="text-gray-500">Plan Type</span>
                               <span className="text-gray-800 font-medium">
                                 {selectedPatient.sponsor_plan || ""}
+                              </span>
+                            </div>
+
+                            <div className="flex justify-between px-3 mb-3 items-center space-x-2">
+                              <span className="text-gray-500">Plan Code</span>
+                              <span className="text-gray-800 font-medium">
+                                {(plancode && plancode) || ""}
                               </span>
                             </div>
 

@@ -7,13 +7,7 @@ import axios from "axios";
 export async function getAllDiagnosis() {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}/api/diagnosis/fetch`,
-
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
-        },
-      }
+      `${process.env.REACT_APP_API_ENDPOINT}/api/diagnosis/fetch`
     );
     return response.data;
   } catch (error: any) {

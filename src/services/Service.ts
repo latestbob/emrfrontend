@@ -24,3 +24,47 @@ export async function getServiceByType(type:string) {
       );
     }
   }
+
+
+  //get investigation by plan code
+
+  export async function getInvestigationByPlanCode(plan_code:string) {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/service/investigations/${plan_code}`,
+  
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.error || "Unable to get Investigations"
+      );
+    }
+  }
+
+
+    //get imaging by plan code
+
+    export async function getImagingByPlanCode(plan_code:string) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_ENDPOINT}/api/service/imaging/${plan_code}`,
+    
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+            },
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        throw new Error(
+          error.response?.data?.error || "Unable to get Imaging"
+        );
+      }
+    }
