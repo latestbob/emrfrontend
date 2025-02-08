@@ -36,6 +36,7 @@ import {
   getImagingByPlanCode,
   getInvestigationByPlanCode,
 } from "../services/Service";
+import { addEncounter } from "../services/encounterService";
 
 const ConsultView = (): JSX.Element => {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ const ConsultView = (): JSX.Element => {
   type selectedInvestigationType = {
     name: string;
     amount: number;
+    billing_status?: string | null;
   };
 
   const [filteredDiagnosis, setFilteredDiagnosis] = useState<DiagnosisType[]>(
@@ -499,35 +501,103 @@ function getFilterImaging() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
+
+  // consult form data here
+const [payment_policy, setPaymentPolicy] = useState<string>("cash");
+
+
+
+  // "payment_policy": "cash",
+  // "patient": "6751645ec79ac1e69bc7efb8",
+  // "consultant": "Dr. Dr Chibuzor Nwogu",
+  // "isUrgent": true,
+  // "comment": "Patient is experiencing severe headache",
+  // "status": "awaiting billing",
+  // "vitals": {
+  //   "height":160,
+  //   "weight":70,
+  //   "blood_pressure": "120/80",
+  //   "pulse_rate": 75,
+  //   "temperature": 98.6
+  // },
+  // "allergies": {
+  //   "drugs": ["penicillin"],
+  //   "food": ["nuts"],
+  //   "other": ["dust"]
+  // },
+  // "symptoms": ["headache", "nausea", "dizziness"],
+  // "family_history": ["diabetes", "hypertension"],
+  // "social_history": ["smoking", "alcohol"],
+  // "diagnosis": [
+  //   {
+  //       "name":"Common Cold",
+  //       "suspected":false
+  // },
+
+  //  {
+  //       "name":"Typhoid fever",
+  //       "suspected":true
+  // }
+  // ],
+  // "investigations": [
+  //   {"name":"Fasting Blood Glucose(FBS)","amount":2000},
+  //    {"name":"Haemoglobin (HB)","amount":5000}
+  // ],
+  // "imaging": [
+  //    {"name":"Both Feet","amount":7000},
+  //    {"name":"Both Knee","amount":7000}
+  // ],
+  // "otherservices": [
+  //   {"name":"Cast Removal","amount":7500}
+  // ]
+
+
+
+  //end of consult form data
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     setLoading(true);
 
+    let newHeight = Number(height);
+    let newWeight = Number(weight);
+
+    const vitals = {
+      height: newHeight,
+      weight: newWeight,
+      blood_pressure: bloodPressure,
+      pulse_rate: pulseRate,
+      temperature: temperature,
+    };
+
     try {
-      const result = await updateAppointment(
-        selectedPatient.sponsor,
-        selectedPatient.sponsor_plan,
+      const result = await addEncounter(
 
-        purpose,
-        visitType,
-        consultant,
-        visitDate,
-
-        scheduleTime,
-        urgent,
-        comment,
-
-        Number(weight),
-        Number(height),
-        Number(bloodPressure),
-        Number(temperature),
-        Number(pulseRate),
-        billable,
-        uuid
+        
+        selectedPatient._id,
+          consultant,
+          urgent,
+          vitals,
+          {
+            drugs: drugAllergy,
+            food: foodAllergy,
+            other: otherAllergy,
+          },
+          "cash",
+          comment,
+          "awaiting billing",
+          selectedSymptoms,
+          familyHistory,
+          socialHistory,
+          selectedDiagnosis,
+          selectedInvestigation,
+          selectedImaging,
+          [],
+        
       );
 
-      toast.success("Apppointment scheduled successfully", {
+      toast.success("Consultation Submitted successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -541,7 +611,7 @@ function getFilterImaging() {
       //    alert("Reset Password Link has been shared to your mail");
       setLoading(false);
 
-      navigate("/appointments");
+      navigate("/consultations");
     } catch (err: any) {
       //setErroMessage(err.message);
       setLoading(false);

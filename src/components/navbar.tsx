@@ -61,7 +61,7 @@ const NavBar = (): JSX.Element => {
 
 
                     {(user.role === 'Administrator' || user.role === 'Super Admin' || user.role === 'Receptionist') && (
-                        <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
+                        <Link to="/encounters" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">
                             <span className='pr-3'><i className='fa fa-hospital text-grey-400'></i></span> Encounters
                         </Link>
 
