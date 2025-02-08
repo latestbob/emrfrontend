@@ -28,6 +28,7 @@ import AddSponsor from './pages/AddSponsor';
 import AddSponsorPage from './pages/AddSponsor';
 import EditSponsorPage from './pages/EditSponsor';
 import Services from './pages/Services';
+import Encounters from './pages/Encounter';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -293,6 +294,17 @@ const routes = [
   component: Services,
   pageTile:`${appName} - Services`
 },
+
+
+{
+  id:25,
+  path:'/encounters',
+  exact:true,
+  auth:true,
+  component: Encounters,
+  pageTile:`${appName} - Encounters`
+},
+
 
 
 
