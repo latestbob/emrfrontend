@@ -113,7 +113,11 @@ const ResetPass = ():JSX.Element => {
         try {
           
           
-         const result =  await resetPassword(email,password);
+         if (token) {
+           const result = await resetPassword(email, password, token);
+         } else {
+           throw new Error('Token is missing');
+         }
 
          toast.success('Password updated successfully', {
             position: "top-right",
@@ -151,7 +155,7 @@ const ResetPass = ():JSX.Element => {
 
     return (
         <>
-            <section className="flex flex-col justify-center px-5 md:px-0  m-0  overflow-x-hidden bg-blue-900 min-h-screen">
+            <section className="flex flex-col justify-center px-5 md:px-0  m-0  overflow-x-hidden bg-cyan-800 min-h-screen">
 
                 <div className='bg-white w-full md:w-2/5 rounded-lg min-h-[60vh] md:min-h-[45vh] m-auto py-16 md:py-8'>
 

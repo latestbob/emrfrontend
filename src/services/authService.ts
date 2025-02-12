@@ -71,11 +71,11 @@ export async function verifyToken(token: string) {
 
 //   reset password
 
-export async function resetPassword(email:string, password:string){
+export async function resetPassword(email:string, password:string, token:string){
     try {
         const response = await axios.post(
             `${process.env.REACT_APP_API_ENDPOINT}/api/auth/reset-password`, 
-            { email, password }
+            { email, password , token}
           );
           return response.data;
     } catch (error:any) {
