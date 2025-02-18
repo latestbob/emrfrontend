@@ -48,7 +48,13 @@ export async function changePassword(email:string, password:string){
 export async function getNonClinicalStaff(){
     try {
         const response = await axios.get(
-            `${process.env.REACT_APP_API_ENDPOINT}/api/user/nonclincalstaff`
+            `${process.env.REACT_APP_API_ENDPOINT}/api/user/nonclincalstaff`,
+
+            {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
           );
           return response.data;
     } catch (error:any) {
@@ -61,7 +67,13 @@ export async function getNonClinicalStaff(){
 export async function getClinicalStaff(){
     try {
         const response = await axios.get(
-            `${process.env.REACT_APP_API_ENDPOINT}/api/user/clinicalstaff`
+            `${process.env.REACT_APP_API_ENDPOINT}/api/user/clinicalstaff`,
+
+            {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
           );
           return response.data;
     } catch (error:any) {
