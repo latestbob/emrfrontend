@@ -156,6 +156,7 @@ export async function addEncounter(
     investigations?: InvestigationType[] | null,
     imaging?: ImagingType[] | null,
     otherservices? : ServiceType[] | null,
+    appointment_uuid?: string | null,
 ) {
     try {
         const response = await axios.post(
@@ -175,7 +176,8 @@ export async function addEncounter(
             diagnosis,
             investigations,
             imaging,
-            otherservices
+            otherservices,
+            appointment_uuid
           },
             {
                 headers: {
@@ -212,3 +214,75 @@ export async function getEncounterByBillingStatus(status:string) {
       );
     }
   }
+
+  //get unique encounter by appointment_uuid
+
+  export async function getUniqueEncounterByAppointmentUuid(appointment_uuid:string) {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/unique/${appointment_uuid}`,
+  
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.error || "Unable to get Encounter"
+      );
+    }
+  }
+
+
+
+  //update encounter / consultation by appointment uuid
+
+  export async function updateEncounterByAppointmentUuid(
+   
+    vitals : IVitalSigns,
+    allergies : IAllergies,
+    comment?: string | null,
+    symptoms? : string[] | null,
+    family_history?: string[] | null,
+    social_history?: string[] | null,
+    diagnosis?: DiagnosisType[] | null,
+    investigations?: InvestigationType[] | null,
+    imaging?: ImagingType[] | null,
+    otherservices? : ServiceType[] | null,
+    appointment_uuid?: string | null,
+) {
+    try {
+        const response = await axios.put(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/unique/${appointment_uuid}`,
+          {  
+          
+            vitals,
+            allergies,
+         
+            comment,
+         
+            symptoms,
+            family_history,
+            social_history,
+            diagnosis,
+            investigations,
+            imaging,
+            otherservices,
+            appointment_uuid
+          },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.error || "Unable to update Encounter"
+        );
+    }
+}

@@ -303,7 +303,7 @@ useEffect(() => {
 
     <tr className="hover:bg-gray-50">
       <td className="border px-4 py-2 text-gray-600">Status</td>
-      <td className="border px-4 py-2 text-gray-800">{fetchedAppointment.status}</td>
+      <td className="border px-4 py-2 text-gray-800">{fetchedAppointment.status == null ? <p className='text-amber-400 font-bold text-bse'>Awaiting Consultation</p> : <p className='text-green-600  font-bold text-bse'>Consulted</p>}</td>
     </tr>
 
 

@@ -93,6 +93,13 @@ const NavBar = (): JSX.Element => {
                         <span className='pr-3'><i className='fa fa-server text-grey-400'></i></span> Services
                     </Link>
 
+                    {(user.role === 'Lab Technician' || user.role === 'Radiologist') && (
+                        <Link to="/investigations" className={`block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white  ${location.pathname == '/staff-member' ? 'bg-[#f36e25] text-white' : 'text-gray-400'}`}>
+                            <span className='pr-3'><i className='fa fa-microscope text-grey-400'></i></span> Investigations
+                        </Link>
+
+                    )}
+
                     {(user.role === 'Administrator' || user.role === 'Super Admin' || user.role === 'Receptionist' || user.role === 'Billing and Accounts Staff') && (
                         
                         <Link to="" className="block text-[15px]  py-3 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-gray-400">

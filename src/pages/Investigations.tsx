@@ -17,7 +17,7 @@ import { getEncounterByBillingStatus } from "../services/encounterService";
 import moment from "moment";
 import { spawn } from "child_process";
 
-const Encounters = (): JSX.Element => {
+const Investigations = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -340,7 +340,7 @@ const renderOthersModal = () => {
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Encounter Management" />
+          <Header title="Investigation Request" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
 
@@ -462,7 +462,9 @@ const renderOthersModal = () => {
                         : <span className="text-sm">No</span> }</td>
                         <td className="px-6 py-4 w-32 text-xs">{serve.billing_officer}</td>
                         <td className="px-6 py-4 w-64 text-xs">
-                        {serve.investigations.length > 0 && (
+
+
+                        {user.role == 'Lab Technician' && serve.investigations.length > 0 && (
                   <span
                     onClick={() => handleInvestigationModalChange(index)} // Pass the row index
                     className="text-xs cursor-pointer bg-teal-700 text-white px-1 rounded"
@@ -473,7 +475,7 @@ const renderOthersModal = () => {
                      <br />
                      <br />
 
-                     {serve.imaging.length > 0 && <span onClick={() => handleImagingModalChange(index)}   className="text-xs bg-blue-400 text-white mt-55 px-1 rounded cursor-pointer">has  imaging</span> }
+                     {user.role == 'Radiologist' && serve.imaging.length > 0 && <span onClick={() => handleImagingModalChange(index)}   className="text-xs bg-blue-400 text-white mt-55 px-1 rounded cursor-pointer">has  imaging</span> }
 <br />
 <br />
 
@@ -482,8 +484,7 @@ const renderOthersModal = () => {
                        
                         </td>
                         <td className="px-6 py-4 w-32 text-xs">
-
-                          {serve.status === "billed" ? (
+                        {serve.status === "billed" ? (
                             <span className="text-xs bg-green-600 text-white px-1 rounded">Billed</span>
                           ) : (
                             <span className="text-xs bg-gray-400 text-white px-1 rounded">Not Billed</span>
@@ -510,28 +511,12 @@ const renderOthersModal = () => {
                                     aria-labelledby="dropdownDefaultButton"
                                 >
                                     <li>
-
-                                    {serve.status === "billed" ? (
-                            <button
-
-                        
-                           
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Generate Receipt
-                        </button>
-                          ) : (
-                            <Link
-
-                                        
-                            to={`/encounter/billing/${serve.uuid}`}
-                            state={{ investigations: serve.investigations, imaging:serve.imaging, otherservices: serve.otherservices, patient:serve.patient }}
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Billing
-                        </Link>
-                          )}
-                                       
+                                        <Link
+                                            to={`/sponsor/${serve.uuid}`}
+                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                            Edit Service
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -563,4 +548,4 @@ const renderOthersModal = () => {
   );
 };
 
-export default Encounters;
+export default Investigations;

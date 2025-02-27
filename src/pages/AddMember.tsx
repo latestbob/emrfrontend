@@ -529,6 +529,8 @@ const AddMember = (): JSX.Element => {
                         <option value="Endocrinologist">Endocrinologist</option>
                         <option value="Oncologist">Oncologist</option>
                         <option value="Radiologist">Radiologist</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Microbiologist">Microbiologist</option>
                         <option value="Anesthesiologist">
                           Anesthesiologist
                         </option>

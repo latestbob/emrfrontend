@@ -147,8 +147,8 @@ async function fetchUniqueAppointment(){
     try {
 
 
-      const result = await getAppointments();
-      setAppointments(result.appointments);
+      // const result = await getAppointments();
+      // setAppointments(result.appointments);
 
     } catch (err: any) {
       //setErroMessage(err.message);

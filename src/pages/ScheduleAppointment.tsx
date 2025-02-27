@@ -17,6 +17,7 @@ import { searchUsers } from "../services/patientService";
 import { getClinicalStaff } from "../services/userService";
 
 import { scheduleAppointment } from "../services/appointment";
+import moment from "moment";
 
 const ScheduleAppointment = (): JSX.Element => {
   const navigate = useNavigate();
@@ -83,8 +84,8 @@ const ScheduleAppointment = (): JSX.Element => {
     try {
 
 
-      const result = await getAppointments();
-      setAppointments(result.appointments);
+      // // const result = await getAppointments();
+      // setAppointments(result.appointments);
 
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -266,8 +267,10 @@ const [comment, setComment] = useState<string>("");
 
 
           visitType,
+
           
-          visitDate,
+          
+         visitDate,
           scheduleTime,
           urgent,
 
@@ -308,6 +311,7 @@ const [comment, setComment] = useState<string>("");
       } catch (err: any) {
         //setErroMessage(err.message);
         setLoading(false);
+        console.log(err);
         toast.error(`${err.message}`, {
           position: "top-right",
           autoClose: 5000,

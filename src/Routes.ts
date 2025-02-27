@@ -29,6 +29,9 @@ import AddSponsorPage from './pages/AddSponsor';
 import EditSponsorPage from './pages/EditSponsor';
 import Services from './pages/Services';
 import Encounters from './pages/Encounter';
+import EditConsultation from './pages/EditConsultation';
+import Investigations from './pages/Investigations';
+import EncounterBilling from './pages/EncounterBilling';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -303,6 +306,43 @@ const routes = [
   auth:true,
   component: Encounters,
   pageTile:`${appName} - Encounters`
+},
+
+
+{
+  id:26,
+  path:'/edit-consultation/:uuid',
+  exact:true,
+  auth:true,
+  component: EditConsultation,
+  pageTile:`${appName} - Edit Consultation`
+},
+
+// {
+//   id:27,
+//   path:'/investigations',
+//   exact:true,
+//   auth:true,
+//   component: EditConsultation,
+//   pageTile:`${appName} - Edit Consultation`,
+//   roles: ['lab_technician']
+// }
+{
+  id:27,
+  path:'/investigations',
+  exact:true,
+  auth:true,
+  component: Investigations,
+  pageTile:`${appName} - Investigation Request`
+},
+
+{
+  id:28,
+  path:'/encounter/billing/:uuid',
+  exact:true,
+  auth:true,
+  component: EncounterBilling,
+  pageTile:`${appName} - Encounter Billing`
 },
 
 

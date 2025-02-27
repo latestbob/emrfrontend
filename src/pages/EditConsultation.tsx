@@ -38,8 +38,9 @@ import {
   getOtherServicesByPlanCode,
 } from "../services/Service";
 import { addEncounter } from "../services/encounterService";
+import { getUniqueEncounterByAppointmentUuid, updateEncounterByAppointmentUuid } from "../services/encounterService";
 
-const ConsultView = (): JSX.Element => {
+const EditConsultation = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { diagnoses } = useDiagnosis();
@@ -290,55 +291,38 @@ function getFilterOtherservices() {
   }
 
 
-  async function fetchUniqueAppointment() {
+  async function fetchUniqueEncounter() {
     try {
       if (uuid) {
-        const result = await getUniqueAppointment(uuid);
-        setFetchAppointment(result.appointment);
+        const result = await getUniqueEncounterByAppointmentUuid(uuid);
+       
+       setSelectedInvestigation(result.encounter.investigations);
+       setSelectedImaging(result.encounter.imaging);
+       setSelectedOtherservices(result.encounter.otherservices);
+       setSelectedDiagnosis(result.encounter.diagnosis);
+       setSelectedSymptoms(result.encounter.symptoms)
+       setFamilyHistory(result.encounter.family_history);
+       setSocialHistory(result.encounter.social_history);
+       setDrugAllergy(result.encounter.allergies.drugs);
+       setFoodAllergy(result.encounter.allergies.food);
+       setOtherAllergy(result.encounter.allergies.other);
+       setWeight(result.encounter.vitals.weight);
+       setHeight(result.encounter.vitals.height);
+       setBloodPressure(result.encounter.vitals.blood_pressure);
+       setTemperature(result.encounter.vitals.temperature);
+       setPulseRate(result.encounter.vitals.pulse_rate);
+       setSelectedPatient(result.encounter.patient);
 
-        setPurpose(result.appointment.purpose);
-        setVisitType(result.appointment.visit_type);
-        setConsultant(result.appointment.consultant);
-        setVisitDate(result.appointment.visit_date);
-        setScheduleTime(result.appointment.scheduled_time);
-        setUrgent(result.appointment.is_urgent);
-        setBillable(result.appointment.is_billed);
-        setWeight(result.appointment.vital_weight);
-        setHeight(result.appointment.vital_height);
-        setBloodPressure(result.appointment.vital_blood_pressure);
-        setTemperature(result.appointment.vital_temperature);
-        setPulseRate(result.appointment.vital_pulserate);
-        setComment(result.appointment.comment);
-
-        //get patient based on UPI
-
-        const patientresult = await getUniquePatient(result.appointment.upi);
-        setSelectedPatient(patientresult.patient);
-
-        setQuery(patientresult.patient.fullname);
-
-        setDrugAllergy(patientresult.patient.allergies.drugs);
-        setFoodAllergy(patientresult.patient.allergies.food);
-        setOtherAllergy(patientresult.patient.allergies.other);
-
-        const plancodeResult = await getUniquePlanByName(
-          patientresult.patient.sponsor_plan
-        );
-
-        setPlanCode(plancodeResult.plan.plan_code);
-
-        console.log(plancode);
-
-        //  if(plancodeResult){
-        //   const investigationResult = await getInvestigationByPlanCode(patientresult.patient.sponsor_plan);
-        //   setInvestigations(investigationResult.investigations);
-        //  }
-
-        // if(plancode){
-        //   const investigationResult = await getInvestigationByPlanCode(patientresult.patient.sponsor_plan);
-        //   setInvestigations(investigationResult.investigations);
-
-        // }
+       const plancodeResult = await getUniquePlanByName(
+        result.encounter.patient.sponsor_plan
+               );
+       
+               setPlanCode(plancodeResult.plan.plan_code);
+       
+              //  console.log(plancode);
+       
+       
+       
       }
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -358,27 +342,8 @@ function getFilterOtherservices() {
   }
 
   useEffect(() => {
-    const fetchClinicalStaff = async () => {
-      try {
-        const response = await getClinicalStaff();
-        setClinicalStaff(response.clinicalstaff);
-      } catch (err: any) {
-        toast.error(`${err.message}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Bounce,
-        });
-      }
-    };
-
-    fetchClinicalStaff();
-    fetchUniqueAppointment();
+   
+    fetchUniqueEncounter();
   }, []);
 
   useEffect(() => {
@@ -619,21 +584,18 @@ const [payment_policy, setPaymentPolicy] = useState<string>("cash");
     };
 
     try {
-      const result = await addEncounter(
+      const result = await updateEncounterByAppointmentUuid(
 
-        
-        selectedPatient._id,
-          consultant,
-          urgent,
+      
           vitals,
           {
             drugs: drugAllergy,
             food: foodAllergy,
             other: otherAllergy,
           },
-          "cash",
+         
           comment,
-          "awaiting billing",
+       
           selectedSymptoms,
           familyHistory,
           socialHistory,
@@ -646,7 +608,7 @@ const [payment_policy, setPaymentPolicy] = useState<string>("cash");
         
       );
 
-      toast.success("Consultation Submitted successfully", {
+      toast.success("Consultation Updated successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -1037,13 +999,13 @@ const [payment_policy, setPaymentPolicy] = useState<string>("cash");
         {/* <!-- Main Content --> */}
         <div className="flex-1 bg-gray-100 min-h-screen">
           {/* <!-- Header --> */}
-          <Header title={`Consultation - ${uuid}`} />
+          <Header title={`Edit Consultation - ${uuid}`} />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
             <div className="flex bg-cyan-900 px-10 py-5 justify-end items-center rounded">
               <div className="buttondiv text-right">
                 <Link
-                  to="/appointments"
+                  to="/consultations"
                   className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">
@@ -2062,4 +2024,4 @@ const [payment_policy, setPaymentPolicy] = useState<string>("cash");
   );
 };
 
-export default ConsultView;
+export default EditConsultation;
