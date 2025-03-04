@@ -57,7 +57,8 @@ export async function scheduleAppointment(
         comment:string,
         purpose:string,
          consultant:string,
-         biller:string
+         biller:string,
+         paymentPolicy:string,
         
          
       
@@ -66,7 +67,7 @@ export async function scheduleAppointment(
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/schedule`,
-      { firstname, lastname, upi, email, sponsor, sponsor_plan, office, office_uuid,  visit_type:visitType, visit_date:visitDate, scheduled_time:scheduleTime, is_urgent:urgent, comment, vital_weight:weight, vital_height:height, vital_blood_pressure:bloodPressure, vital_temperature:temperature, vital_pulserate:pulseRate, is_billed:billable, purpose, consultant, biller },
+      { firstname, lastname, upi, email, sponsor, sponsor_plan, office, office_uuid,  visit_type:visitType, visit_date:visitDate, scheduled_time:scheduleTime, is_urgent:urgent, comment, vital_weight:weight, vital_height:height, vital_blood_pressure:bloodPressure, vital_temperature:temperature, vital_pulserate:pulseRate, is_billed:billable, purpose, consultant, biller, payment_policy:paymentPolicy },
 
       {
         headers: {

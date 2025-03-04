@@ -269,7 +269,7 @@ async function fetchScheduledAppointment(){
 
 
                 <th scope="col" className="px-6 py-3">
-                    Consultant
+                    Status
                 </th>
                
                 <th scope="col" className="px-6 py-3">

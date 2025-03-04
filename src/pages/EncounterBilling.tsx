@@ -3,13 +3,14 @@ import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 
 import { LogoutUser } from "../services/authService";
 import { changePassword } from "../services/userService";
-import { getEncounterByBillingStatus } from "../services/encounterService";
+import { createEncounterTransaction, getEncounterByBillingStatus } from "../services/encounterService";
 
 import { Bounce, toast } from "react-toastify";
 
 import NavBar from "../components/navbar";
 import Header from "../components/header";
 import { useAuth } from "../contexts/auth";
+import { ITransaction } from "../services/encounterService";
 
 interface Investigation {
   
@@ -53,6 +54,14 @@ const EncounterBilling = (): JSX.Element => {
   ];
   const [activeTab, setActiveTab] = useState(TABS[0].key);
 
+  const [paymentPolicy, setPaymentPolicy] = useState("");
+  
+  // Handle select input change
+  const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPaymentPolicy(e.target.value);
+  };
+  
+
   useEffect(() => {
     if (user) {
       setEmail(user.email);
@@ -77,60 +86,64 @@ const EncounterBilling = (): JSX.Element => {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-
-        // const transaction: Transaction = {
-        //   patientId: patient._id,
-        //   encounterUuid: uuid,
-        //   date: new Date(),
-        //   totalAmount: totalAmount,
-        //   paymentStatus: "pending",
-        //   paymentMethod: "cash", // This should be dynamically set based on user selection
-        //   services: {
-        //     investigations: selectedInvestigations.map(service => ({
-        //     _id: service._id,
-        //     name: service.name,
-        //     amount: service.amount,
-        //     billingStatus: "pending"
-        //     })),
-        //     imaging: selectedImaging.map(service => ({
-        //     _id: service._id,
-        //     name: service.name,
-        //     amount: service.amount,
-        //     billingStatus: "pending"
-        //     })),
-        //     otherServices: selectedOtherServices.map(service => ({
-        //     _id: service._id,
-        //     name: service.name,
-        //     amount: service.amount,
-        //     billingStatus: "pending"
-        //     }))
-        //   },
-        //   createdBy: user._id,
-        //   createdAt: new Date()
-        // };
-
-        // // Call the service to save the transaction
-        // await saveTransaction(transaction);
-
-        toast.success("Transaction successfully created!", {
-          position: "top-right",
-          autoClose: 5000,
-          transition: Bounce,
-          theme: "colored"
-        });
-
-        // Redirect or perform any other actions after successful submission
-        navigate("/transactions");
-      
-    } catch (err: any) {
-      toast.error(`${err.message}`, {
+      const transaction: ITransaction = {
+        patientUPI: patient.upi,
+       type_uuid: uuid, // Fixed field name
+        date: new Date(),
+        totalAmount: totalAmount,
+        paymentStatus: "paid",
+        paymentMethod: paymentPolicy, // Ensure this value is correctly set
+        paymentReference: "", // Optional, include if available
+        services: {
+          investigations: selectedInvestigations.map((service) => ({
+            _id: service._id,
+            name: service.name,
+            amount: service.amount,
+            billingStatus: "pending",
+          })),
+          imaging: selectedImaging.map((service) => ({
+            _id: service._id,
+            name: service.name,
+            amount: service.amount,
+            billingStatus: "pending",
+          })),
+          otherservices: selectedOtherServices.map((service) => ({
+            _id: service._id,
+            name: service.name,
+            amount: service.amount,
+            billingStatus: "pending",
+          })),
+        },
+        createdBy: user.email,
+        createdAt: new Date(),
+        updatedBy: user.email, // Optional but recommended
+        updatedAt: new Date(), // Optional but recommended
+        sponsor: patient.sponsor, // Ensure this value is available
+        sponsor_plan: patient.sponsor_plan // Ensure this value is available
+      };
+  
+      // Call the service to save the transaction
+      await createEncounterTransaction(transaction);
+  
+      toast.success("Transaction successfully created!", {
         position: "top-right",
         autoClose: 5000,
         transition: Bounce,
-        theme: "colored"
+        theme: "colored",
+      });
+  
+      // Redirect or perform any other actions after successful submission
+      navigate("/encounters");
+    } catch (err: any) {
+      toast.error(`${err.message || "Something went wrong"}`, {
+        position: "top-right",
+        autoClose: 5000,
+        transition: Bounce,
+        theme: "colored",
       });
     }
   }
+  
 
   async function handleLogOut() {
     await LogoutUser();
@@ -217,7 +230,13 @@ const checkAllServices = () => {
     setTotalAmount((prevTotal) => prevTotal + total);
   };
   
-  
+    useEffect(() => {
+        if (patient?.sponsor) {
+          setPaymentPolicy(
+            patient?.sponsor === "Self Sponsor" ? "cash" : "claims"
+          );
+        }
+      }, [patient?.sponsor]);
 
   return (
     <>
@@ -259,6 +278,7 @@ const checkAllServices = () => {
             <br />
             <br />
 
+<form onSubmit={handleSubmit}>
          
         <div className="grid grid-cols-3 gap-4 mb-6">
             <div>
@@ -273,7 +293,8 @@ const checkAllServices = () => {
 
             <div>
                 <p className="text-sm font-medium">Payment Policy</p>
-                <select className="w-full p-2 border rounded">
+                <select onChange={handlePaymentPolicyChange} value={paymentPolicy} className="w-full p-2 border rounded"required>
+                <option value="">Select Payment Policy</option>
                     <option value="cash">Cash</option>
                     <option value="claims">Claims</option>
                 </select>
@@ -287,7 +308,7 @@ const checkAllServices = () => {
                 <div className="mx-auto p-6 bg-white shadow-lg rounded-lg">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-lg font-semibold">Investigations</p>
-                    <button onClick={checkAllServices} className="px-4 py-2 bg-cyan-800 text-white rounded hover:bg-blue-600">
+                    <button type="button" onClick={checkAllServices} className="px-4 py-2 bg-cyan-800 text-white rounded hover:bg-blue-600">
                       Check All
                     </button>
                   </div>
@@ -364,15 +385,22 @@ const checkAllServices = () => {
                     <p className="text-lg font-semibold">₦{totalAmount}</p>
                   </div>
 
-                  <button className="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+                  <button type="submit" className="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
                     Generate Invoice
                   </button>
                 </div>
+                
               </div>
+              
             </div>
+            </form>
           </main>
+
         </div>
+        
       </div>
+
+      
     </>
   );
 };

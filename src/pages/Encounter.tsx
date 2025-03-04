@@ -32,7 +32,7 @@ const Encounters = (): JSX.Element => {
   const[ encounters, setSetEncounters] = useState<any[]>([]);
   const TABS = [
     { key: "awaiting billing", label: "Awaiting Billing" },
-    { key: "billed", label: "Has Billing" },
+    { key: "billed", label: "Billed" },
     
   ];
 
@@ -417,7 +417,7 @@ const renderOthersModal = () => {
             <th scope="col" className="px-6 py-3 w-24">
                 Urgent
             </th>
-            <th scope="col" className="px-6 py-3 w-32">
+            <th scope="col" className="px-6 py-3 w-72">
                 Billing Officer
             </th>
             <th scope="col" className="px-6 py-3 w-64">
@@ -426,9 +426,7 @@ const renderOthersModal = () => {
             <th scope="col" className="px-6 py-3 w-32">
                 Billing
             </th>
-            <th scope="col" className="px-6 py-3 w-32">
-                Status/Comments
-            </th>
+          
             <th scope="col" className="px-6 py-3 w-32">
                 Action
             </th>
@@ -460,7 +458,7 @@ const renderOthersModal = () => {
                         <td className="px-6 py-4 w-32 text-xs">{serve.consultant}</td>
                         <td className="px-6 py-4 w-24 text-xs">{serve.isUrgent ? <span className="text-xs text-red-600">Yes</span>
                         : <span className="text-sm">No</span> }</td>
-                        <td className="px-6 py-4 w-32 text-xs">{serve.billing_officer}</td>
+                        <td className="px-6 py-4 w-72 text-sm">{serve.billing_officer}</td>
                         <td className="px-6 py-4 w-64 text-xs">
                         {serve.investigations.length > 0 && (
                   <span
@@ -489,7 +487,7 @@ const renderOthersModal = () => {
                             <span className="text-xs bg-gray-400 text-white px-1 rounded">Not Billed</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 w-32 text-xs">{serve.comment}</td>
+                     
                         <td className="px-6 py-4 w-32 text-xs">
                             <button
                                 id="dropdownDefaultButton"

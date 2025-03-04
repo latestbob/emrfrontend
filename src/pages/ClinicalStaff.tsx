@@ -267,6 +267,10 @@ async function fetchClinicalStaff(){
                         <label className="sr-only">checkbox</label> */}
                     </div>
                 </th>
+
+                <th scope="col" className="px-6 py-3">
+                    UUID
+                </th>
                 <th scope="col" className="px-6 py-3">
                     First Name
                 </th>
@@ -308,6 +312,7 @@ async function fetchClinicalStaff(){
                   <label className="sr-only">checkbox</label> */}
                 </div>
               </td>
+              <td className="px-6 py-4">{staff.uuid}</td>
               <th
                 scope="row"
                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"

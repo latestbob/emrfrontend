@@ -32,6 +32,8 @@ import Encounters from './pages/Encounter';
 import EditConsultation from './pages/EditConsultation';
 import Investigations from './pages/Investigations';
 import EncounterBilling from './pages/EncounterBilling';
+import EncounterResults from './pages/EncounterResults';
+import AddEncounterResults from './pages/AddEncounterResults';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -344,6 +346,29 @@ const routes = [
   component: EncounterBilling,
   pageTile:`${appName} - Encounter Billing`
 },
+
+{
+  id:28,
+  path:'/encounter/:uuid/result',
+  exact:true,
+  auth:true,
+  component: EncounterResults,
+  pageTile:`${appName} - Encounter Results`
+},
+
+
+
+{
+  id:29,
+  path:'/result/:type/:uuid',
+  exact:true,
+  auth:true,
+  component: AddEncounterResults,
+  pageTile:`${appName} - Add Encounter Results`
+},
+
+
+
 
 
 
