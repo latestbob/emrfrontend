@@ -105,7 +105,7 @@ const Login = ():JSX.Element => {
                                 onChange={handleEmailChange}
                                 type="email"
                                 className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-200 sm:text-sm"
-                                placeholder="Enter your email address"
+                                placeholder="Enter your email address"required
                             />
                         </div>
 
@@ -115,7 +115,7 @@ const Login = ():JSX.Element => {
                                 onChange={handlePasswordChange}
                                 type={showPassword ? 'text' : 'password'}
                                 className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-200 sm:text-sm"
-                                placeholder="Enter your password"
+                                placeholder="Enter your password"required
                             />
 
                             <div className="toggle my-3">

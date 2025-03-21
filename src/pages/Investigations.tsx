@@ -354,6 +354,14 @@ const Investigations = (): JSX.Element => {
     return null;
   };
 
+  interface Investigation {
+    _id: string;
+    name: string;
+    amount: number;
+    billing_status: string;
+    has_result: string | null;
+  }
+
   return (
     <>
       <div className="flex flex-no-wrap">
@@ -438,6 +446,12 @@ const Investigations = (): JSX.Element => {
                       <th scope="col" className="px-6 py-3 w-32">
                         Billing
                       </th>
+
+                      {activeTab === "billed" && (
+                        <th scope="col" className="px-6 py-3 w-72">
+                          Results
+                        </th>
+                      )}
 
                       <th scope="col" className="px-6 py-3 w-32">
                         Action
@@ -541,6 +555,39 @@ const Investigations = (): JSX.Element => {
                               )}
                             </td>
 
+                            {activeTab === "billed" &&
+                              (user.role == "Radiologist" ? (
+                                <td className="px-6 py-3 w-72 text-xs">
+                                  {serve.imaging.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ? (
+                                    <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                                      has imaging result(s)
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                                      awaiting results
+                                    </span>
+                                  )}
+                                </td>
+                              ) : (
+                                <td className="px-6 py-3 w-72 text-xs">
+                                  {serve.investigations.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ? (
+                                    <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                                      has investigation result(s)
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                                      awaiting results
+                                    </span>
+                                  )}
+                                </td>
+                              ))}
+
                             <td className="px-6 py-4 w-32 text-xs">
                               <button
                                 id="dropdownDefaultButton"
@@ -564,29 +611,34 @@ const Investigations = (): JSX.Element => {
                                 >
                                   {serve.status === "billed" ? (
                                     <li>
+                                      {user.role == "Radiologist" && (
+                                        <Link
+                                          to={`/encounter/${serve.uuid}/result`}
+                                          state={{
+                                            investigations: serve.imaging,
+                                            patient: serve.patient,
+                                            type: "Imaging Investigations",
+                                          }}
+                                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                          Add Results
+                                        </Link>
+                                      )}
 
-                                      {
-                                        user.role == 'Radiologist' && <Link
-                                        to={`/encounter/${serve.uuid}/result`}
-                                        state={{ investigations: serve.imaging, patient:serve.patient, type:"Imaging Investigations" }}
-                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                      >
-                                        Add Results
-                                      </Link> 
-                                      
-                                      }
-
-{
-                                        user.role == 'Lab Technician' && <Link
-                                        to={`/encounter/${serve.uuid}/result`}
-                                        state={{ investigations: serve.investigations, patient:serve.patient, type:"Pathology Investigations" }}
-                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                      >
-                                        Add Results
-                                      </Link> 
-                                      
-                                      }
-                                      
+                                      {user.role == "Lab Technician" && (
+                                        <Link
+                                          to={`/encounter/${serve.uuid}/result`}
+                                          state={{
+                                            investigations:
+                                              serve.investigations,
+                                            patient: serve.patient,
+                                            type: "Pathology Investigations",
+                                          }}
+                                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                          Add Results
+                                        </Link>
+                                      )}
                                     </li>
                                   ) : (
                                     <span className="text-xs bg-gray-400 text-white px-1 rounded">
