@@ -34,6 +34,10 @@ import Investigations from './pages/Investigations';
 import EncounterBilling from './pages/EncounterBilling';
 import EncounterResults from './pages/EncounterResults';
 import AddEncounterResults from './pages/AddEncounterResults';
+import OPD from './pages/OPD';
+import OPDResults from './pages/OPDResults';
+import OPDViewResult from './pages/OPDViewResult';
+import DownloadResult from './pages/DownloadResult';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -365,6 +369,45 @@ const routes = [
   auth:true,
   component: AddEncounterResults,
   pageTile:`${appName} - Add Encounter Results`
+},
+
+
+{
+  id:30,
+  path:'/opd',
+  exact:true,
+  auth:true,
+  component: OPD,
+  pageTile:`${appName} - OPD`
+},
+
+{
+  id:31,
+  path:'/opd/results/:uuid',
+  exact:true,
+  auth:true,
+  component: OPDResults,
+  pageTile:`${appName} - OPD Results`
+},
+
+
+{
+  id:32,
+  path:'/opd/view-result/:uuid/:testname',
+  exact:true,
+  auth:true,
+  component: OPDViewResult,
+  pageTile:`${appName} - OPD View Result`
+},
+
+
+{
+  id:33,
+  path:'/download-test-result',
+  exact:true,
+  auth:true,
+  component: DownloadResult,
+  pageTile:`${appName} - OPD Download Result`
 },
 
 

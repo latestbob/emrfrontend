@@ -53,3 +53,49 @@ export async function AddResults(
   }
 
 
+//get result by testname
+
+export async function getUniqueResultByTestName(uuid:string, testname:string) {
+  try {
+
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/result/unique/${uuid}/${testname}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to get result"
+    );
+  }
+}
+
+
+//download result
+export async function downloadResultByTestName(uuid:string, testname:string) {
+  try {
+
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/result/download/${uuid}/${testname}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to get result"
+    );
+  }
+}
+

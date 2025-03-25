@@ -237,10 +237,12 @@ export async function addEncounter(
 
 //get encounter by billing status
 
-export async function getEncounterByBillingStatus(status:string) {
+export async function getEncounterByBillingStatus(status:string, consultant?:string) {
     try {
+      const queryParams = consultant ? `?consultant=${encodeURIComponent(consultant)}` : "";
+
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/billing/${status}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/billing/${status}${queryParams}`,
   
         {
           headers: {
