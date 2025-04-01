@@ -3,6 +3,8 @@ import { createContext, useState, useEffect,  useContext, ReactNode } from "reac
 import { LoginUser, LogoutUser } from '../services/authService';
 
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Bounce, toast } from 'react-toastify';
 
 
 interface AuthContextType {
@@ -36,7 +38,42 @@ export const AuthContextProvider  = function({children} : {children:ReactNode}){
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
-    }, []);
+
+        // Add Axios response interceptor
+        const interceptor = axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response?.data?.message === "No token, authorization denied" || error.response?.data?.message  === "Token is not valid") {
+                    // Clear token and user data
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    setUser(null);
+                    setToken(null);
+
+                    toast.error(`Authorized or expired token`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                        transition: Bounce,
+                      });
+
+                    // Redirect to login
+                    navigate("/");
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+
+    }, [navigate]);
 
 
     const value = {

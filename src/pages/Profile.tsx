@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { LogoutUser } from '../services/authService';
 import { updateProfile } from '../services/userService';
@@ -47,7 +47,7 @@ async function handleSubmit(e:React.FormEvent){
   try {
     
     
-   const result =  await updateProfile(phone, uuid);
+  //  const result =  await updateProfile(phone, uuid);
 
    toast.success('Profile updated successfully', {
       position: "top-right",
@@ -119,7 +119,8 @@ async function handleSubmit(e:React.FormEvent){
         <div className="w-[80%] m-auto bg-white p-6 rounded-lg shadow-md">
 
           <div className="text-right">
-            <p onClick={openModal} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</p>
+            {/* <p onClick={openModal} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</p> */}
+          {user &&   <Link to={`/profile/${user.uuid}`} className="text-sm text-blue-800 font-medium cursor-pointer">Edit Profile</Link>}
           </div>
 
 
@@ -152,6 +153,16 @@ async function handleSubmit(e:React.FormEvent){
     <tr className="hover:bg-gray-50">
       <td className="border px-4 py-2 text-gray-600">Phone Number</td>
       <td className="border px-4 py-2 text-gray-800">{user.phone}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">Gender</td>
+      <td className="border px-4 py-2 text-gray-800">{user.gender}</td>
+    </tr>
+
+    <tr className="hover:bg-gray-50">
+      <td className="border px-4 py-2 text-gray-600">DOB</td>
+      <td className="border px-4 py-2 text-gray-800">{user.dob}</td>
     </tr>
 
     <tr className="hover:bg-gray-50">

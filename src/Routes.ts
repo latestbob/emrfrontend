@@ -38,6 +38,9 @@ import OPD from './pages/OPD';
 import OPDResults from './pages/OPDResults';
 import OPDViewResult from './pages/OPDViewResult';
 import DownloadResult from './pages/DownloadResult';
+import ProfileEdit from './pages/EditProfile';
+import EditService from './pages/EditService';
+import AppointmentBilling from './pages/AppointmentBilling';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -411,6 +414,34 @@ const routes = [
 },
 
 
+{
+  id:34,
+  path:'/profile/:uuid',
+  exact:true,
+  auth:true,
+  component: ProfileEdit,
+  pageTile:`${appName} - Edit My Profile`
+},
+
+
+{
+  id:35,
+  path:'/edit-service/:uuid',
+  exact:true,
+  auth:true,
+  component: EditService,
+  pageTile:`${appName} - Edit Service`
+},
+
+
+{
+  id:36,
+  path:'/appointment/billing',
+  exact:true,
+  auth:true,
+  component: AppointmentBilling,
+  pageTile:`${appName} - Appointment Billing`
+},
 
 
 

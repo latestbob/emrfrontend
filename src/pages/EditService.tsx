@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 
 import { LogoutUser } from "../services/authService";
 
@@ -15,19 +15,30 @@ import { getRoles } from "../services/roleService";
 import { getDepartments } from "../services/departmentService";
 import { registerMember } from "../services/authService";
 import { AddSponsor } from "../services/sponsorService";
+import { updateService } from "../services/Service";
 
 
 
-const AddSponsorPage = (): JSX.Element => {
+const EditService = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const location = useLocation();
+  
 
   // Parse query parameters
   
   const { setToken, setUser, user } = useAuth();
 
   const [isValid, setIsValid] = useState(false);
+
+      const location = useLocation();
+       const { uuid = "" } = useParams();
+       
+    
+      // Initialize investigations, imaging, otherservices from location state or empty array
+  
+        const [name, setName] = useState<any>(location.state?.name || {});
+        const [type, setType] = useState<any>(location.state?.type || {});
+        const [price, setPrice] = useState<any>(location.state?.price || {});
 
   
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -40,12 +51,6 @@ const AddSponsorPage = (): JSX.Element => {
 
 //   name, type, phone, contact_email, contact_person
 
-  const [name, setName] = useState<string>("");
-  const [type, setType] = useState<string>("");
- 
-  const [phone, setPhone] = useState<string>("");
-  const [contact_email, setContactEmail] = useState<string>("");
-  const [contact_person, setContactPerson] = useState<string>("");
 
 
 
@@ -72,15 +77,10 @@ const AddSponsorPage = (): JSX.Element => {
     setLoading(true);
 
     try {
-      const result = await AddSponsor(
-        name,
-        type,
-        phone,
-        contact_email,
-        contact_person
-      );
+     
+        const result = await updateService(name, type, price, uuid);
 
-      toast.success("You have successfully added a sponsor", {
+      toast.success("Service updated successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -94,7 +94,7 @@ const AddSponsorPage = (): JSX.Element => {
       //    alert("Reset Password Link has been shared to your mail");
       setLoading(false);
 
-      navigate('/sponsors');
+      navigate('/services');
       
      
     } catch (err: any) {
@@ -173,39 +173,9 @@ const AddSponsorPage = (): JSX.Element => {
     setName(e.target.value);
   }
 
-//   function handleLastChange(e: React.ChangeEvent<HTMLInputElement>) {
-//     setLastName(e.target.value);
-//   }
 
-  function handleContactEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    setContactEmail(value);
-  
-    // Email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-    if (!emailRegex.test(value)) {
-      e.target.setCustomValidity("Please enter a valid email address.");
-    } else {
-      e.target.setCustomValidity(""); // Clear error when valid
-    }
-  }
-
-  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-
-    // Allow only numbers and a single "+" at the start
-    if (!/^\+?[0-9]*$/.test(value)) {
-      e.target.setCustomValidity("Please enter valid phone number.");
-    } else {
-      e.target.setCustomValidity(""); // Reset validation message
-    }
-  
-    setPhone(value);
-  }
-
-  function handleContactChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setContactPerson(e.target.value);
+  function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPrice(e.target.value);
   }
 
   function handleTypeChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -239,7 +209,7 @@ const AddSponsorPage = (): JSX.Element => {
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Add Sponsor" />
+          <Header title="Edit Service" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
             <div className="flex bg-cyan-900 px-10 py-5 justify-end items-center rounded">
@@ -250,7 +220,7 @@ const AddSponsorPage = (): JSX.Element => {
 
               <div className="buttondiv text-right">
                 <Link
-                  to="/sponsors"
+                  to="/services"
                   className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">
@@ -274,14 +244,13 @@ const AddSponsorPage = (): JSX.Element => {
                       htmlFor="firstname"
                       className="block text-sm font-medium text-gray-700"
                     >
-                     Sponsor Name <span className="text-red-500">*</span>
+                     Service Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      id="firstname"
-                      name="firstname"
                       onChange={handleNameChange}
                       value={name}
+                      
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                      
                       required
@@ -293,16 +262,26 @@ const AddSponsorPage = (): JSX.Element => {
                       htmlFor="lastname"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Contact Email <span className="text-red-500">*</span>
+                      Type <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="email"
-                      onChange={handleContactEmailChange}
-                      value={contact_email}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      
-                      required
-                    />
+                    <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            onChange={handleTypeChange}
+                            value={type}
+                           
+                            required
+                          >
+                            <option value=""></option>
+
+                            <option value="Pathology Investigations">Pathology Investigations</option>
+                            <option value="Imaging Investigation">Imaging Investigation</option>
+                            <option value="Service">Other Services</option>
+                           
+
+
+
+
+                          </select>
                   </div>
                 </div>
 
@@ -312,12 +291,13 @@ const AddSponsorPage = (): JSX.Element => {
                       htmlFor="firstname"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Phone No. <span className="text-red-500">*</span>
+                      Price <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="tel"
-                      onChange={handlePhoneChange}
-                      value={phone}
+                      type="number"
+                      onChange={handlePriceChange}
+                      value={price}
+                     
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       
                       required
@@ -325,64 +305,10 @@ const AddSponsorPage = (): JSX.Element => {
                   </div>
                  
 
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="lastname"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Type<span className="text-red-500">*</span>
-                    </label>
-                    {/* <select
-                 
-                      
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                     
-                    /select> */}
-
-                    <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      name=""
-                      id=""
-                      onChange={handleTypeChange}
-                      value={type}
-                      required
-                    >
-                      <option value="">Sponsor Type</option>
-
-                        <option value="Individual">Individual</option>
-                        <option value="Clinic">Clinic</option>
-                        <option value="Hospital">Hospital</option>
-                        <option value="HMO">HMO</option>
-                        <option value="Company">Company</option>
-                        <option value="Internal">Internal</option>
-
-                    </select>
-                  </div>
                 </div>
-
-                
 
              
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="firstname"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                     Contact Person
-                      <span className="text-red-500">
-                        *
-                      </span>
-                    </label>
-                    <input
-                      type="text"
-                      onChange={handleContactChange}
-                      value={contact_person}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      
-                    />
-                  </div>
-                </div>
+               
 
                 <hr />
 
@@ -393,7 +319,7 @@ const AddSponsorPage = (): JSX.Element => {
                     type="submit"
                     className="w-full text-center text-white bg-[#f36e25] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-base px-5 py-3  dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                   >
-                    {loading ? "Loading..." : "Add New Sponsor"}
+                    {loading ? "Loading..." : "Update Service"}
                   </button>
                 </div>
               </form>
@@ -405,4 +331,4 @@ const AddSponsorPage = (): JSX.Element => {
   );
 };
 
-export default AddSponsorPage;
+export default EditService;

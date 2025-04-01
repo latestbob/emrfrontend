@@ -177,7 +177,7 @@ const ScheduleAppointment = (): JSX.Element => {
   const [visitDate, setVisitDate] = useState<string>("");
   const [scheduleTime, setScheduleTime] = useState<string>("");
   const [urgent, setUrgent] = useState<boolean>(false);
-  const [billable, setBillable] = useState<boolean>(true);
+  const [billable, setBillable] = useState<boolean>(false);
   const [weight, setWeight] = useState<string>("");
   const [height, setHeight] = useState<string>("");
   const [bloodPressure, setBloodPressure] = useState<string>("");
@@ -220,9 +220,9 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUrgent(!urgent);
   }
 
-  function handleBillableChange() {
-    setBillable(!billable);
-  }
+  // function handleBillableChange() {
+  //   setBillable(!billable);
+  // }
 
   function handleWeightChange(e: React.ChangeEvent<HTMLInputElement>) {
     setWeight(e.target.value);
@@ -261,6 +261,8 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     
   
       try {
+
+        
         const result = await scheduleAppointment(
           selectedPatient.firstname, 
           selectedPatient.lastname, 
@@ -414,7 +416,7 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                               onChange={handleSearchChange}
                               value={query}
                               className="w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              placeholder="Search UPI, Card Number or Surname"
+                              placeholder="Search UPI, Card Number or Surname"required
 
                             />
 
@@ -717,11 +719,14 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                             <div className="flex space-x-4">
                               <div className="space-y-2">
                                 <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
-                                  Weight
+                                  Weight <span className="xs">(kg)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="weight"
+                                  min="2"   
+                                  max="300" 
+                                  step="0.1" 
                                   onChange={handleWeightChange}
                                   value={weight}
                                   className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -730,10 +735,13 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
                               <div className="space-y-2">
                                 <label htmlFor="height" className="block text-sm font-medium text-gray-700">
-                                  Height
+                                  Height <span className="xs">(cm)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
+                                  min="50"   
+                                  max="300" 
+                                  step="0.1" 
                                   id="height"
                                   onChange={handleHeightChange}
                                   value={height}
@@ -743,41 +751,48 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
                               <div className="space-y-2">
                                 <label htmlFor="bloodPressure" className="block text-sm font-medium text-gray-700">
-                                  Blood Pressure
+                                  Blood Pressure <span className="xs">(mmHg)</span>
                                 </label>
                                 <input
                                   type="text"
                                   id="bloodPressure"
                                   onChange={handleBloodPressureChange}
                                   value={bloodPressure}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  placeholder="e.g., 120/80"
+                                  className="px-3 py-2  border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
 
                               <div className="space-y-2">
                                 <label htmlFor="temperature" className="block text-sm font-medium text-gray-700">
-                                  Temperature
+                                  Temperature <span className="xs">(°C)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="temperature"
+                                  min="30" 
+                                  max="45" 
+                                  step="0.1"
                                   onChange={handleTemperatureChange}
                                   value={temperature}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 border w-32 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
 
                               <div className="space-y-2">
                                 <label htmlFor="pulseRate" className="block text-sm font-medium text-gray-700">
-                                  Pulse Rate
+                                  Pulse Rate <span className="xs">(bpm)</span>
 
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="pulseRate"
+                                  min="30" 
+                                  max="220" 
+                                  step="1"
                                   onChange={handlePulseRateChange}
                                   value={pulseRate}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 w-32 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
                             </div>
@@ -800,7 +815,7 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-6">
 
-                        <div className="space-x-2">
+                        {/* <div className="space-x-2">
              
 
                           <label className="relative inline-flex items-center cursor-pointer">
@@ -810,7 +825,7 @@ const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                           </label>
 
 
-                        </div>
+                        </div> */}
 
 
 

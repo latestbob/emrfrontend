@@ -232,7 +232,16 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
   }
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(e.target.value);
+    let value = e.target.value;
+
+    // Allow only numbers and a single "+" at the start
+    if (!/^\+?[0-9]*$/.test(value)) {
+      e.target.setCustomValidity("Please enter valid phone number.");
+    } else {
+      e.target.setCustomValidity(""); // Reset validation message
+    }
+  
+    setPhone(value);
   }
 
   function handleDobChange(e: React.ChangeEvent<HTMLInputElement>) {

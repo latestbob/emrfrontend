@@ -186,3 +186,38 @@ export async function cancelAppointment(uuid:string) {
     );
   }
 }
+
+
+//bill appoinmtment
+
+export async function billAppoinment(
+  upi:string,
+  uuid:string,
+  amount:number,
+  payment_policy:string,
+  biller:string,
+  sponsor:string,
+  sponsor_plan:string
+        
+         
+      
+      
+) {
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/billing`,
+      { upi, uuid, amount, payment_policy, biller, sponsor, sponsor_plan },
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to bill appointment"
+    );
+  }
+}

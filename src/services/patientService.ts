@@ -91,6 +91,11 @@ export async function registerPatient(
         gender,
         address,
         allergies
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
       }
     );
     return response.data;

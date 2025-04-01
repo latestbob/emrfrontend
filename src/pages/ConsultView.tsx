@@ -1043,7 +1043,7 @@ const [payment_policy, setPaymentPolicy] = useState<string>("cash");
             <div className="flex bg-cyan-900 px-10 py-5 justify-end items-center rounded">
               <div className="buttondiv text-right">
                 <Link
-                  to="/appointments"
+                  to="/consultations"
                   className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2"
                 >
                   <span className="pr-4">

@@ -267,6 +267,11 @@ async function fetchScheduledAppointment(){
                     Consultant
                 </th>
 
+                <th scope="col" className="px-6 py-3 w-36">
+                    Billing
+                </th>
+
+
 
                 <th scope="col" className="px-6 py-3">
                     Status
@@ -308,6 +313,12 @@ async function fetchScheduledAppointment(){
 
                 <td className="px-6 py-4">
                     {appoint.consultant}
+                </td>
+
+                <td className="px-6 py-4 w-36">
+                   {
+                    appoint.is_billed ? <span className="bg-green-500 text-white rounded-lg text-xs px-2 ">Billed</span> : <span className="bg-gray-600 text-white rounded-lg text-xs px-2">Not Billed</span>
+                   }
                 </td>
 
                 <td className="px-6 py-4">
@@ -365,6 +376,21 @@ async function fetchScheduledAppointment(){
                       </Link>
                     </li>
 
+                    {!appoint.is_billed &&
+                    <li>
+                    <Link
+                       to={`/appointment/billing`}
+                       state={{
+                        appointment:appoint
+                      }}
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Billing
+                    </Link>
+                  </li>
+
+                    }
+
                    
                     {/* <li>
                       <Link
@@ -375,6 +401,8 @@ async function fetchScheduledAppointment(){
                       </Link>
                     </li> */}
 
+
+                      {user && user.role == "Receptionist" && 
                     <li>
                       <button
                         onClick={() => {
@@ -386,7 +414,7 @@ async function fetchScheduledAppointment(){
                         Cancel
                       </button>
                     </li>
-                    
+                }
                     
                   </ul>
                 </div>
