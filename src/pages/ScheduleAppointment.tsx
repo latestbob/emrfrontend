@@ -17,6 +17,7 @@ import { searchUsers } from "../services/patientService";
 import { getClinicalStaff } from "../services/userService";
 
 import { scheduleAppointment } from "../services/appointment";
+import moment from "moment";
 
 const ScheduleAppointment = (): JSX.Element => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const ScheduleAppointment = (): JSX.Element => {
   const [clinicalStaff, setClinicalStaff] = useState<any[]>([]);
 
   const [sheowvital, setShowVital] = useState<boolean>(false);
+
 
 
 
@@ -83,8 +85,8 @@ const ScheduleAppointment = (): JSX.Element => {
     try {
 
 
-      const result = await getAppointments();
-      setAppointments(result.appointments);
+      // // const result = await getAppointments();
+      // setAppointments(result.appointments);
 
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -182,6 +184,13 @@ const ScheduleAppointment = (): JSX.Element => {
   const [temperature, setTemperature] = useState<string>("");
   const [pulseRate, setPulseRate] = useState<string>("");
 const [comment, setComment] = useState<string>("");
+const [paymentPolicy, setPaymentPolicy] = useState("");
+
+// Handle select input change
+const handlePaymentPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setPaymentPolicy(e.target.value);
+};
+
 
   function handlePurposeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setPurpose(e.target.value)
@@ -211,9 +220,9 @@ const [comment, setComment] = useState<string>("");
     setUrgent(!urgent);
   }
 
-  function handleBillableChange() {
-    setBillable(!billable);
-  }
+  // function handleBillableChange() {
+  //   setBillable(!billable);
+  // }
 
   function handleWeightChange(e: React.ChangeEvent<HTMLInputElement>) {
     setWeight(e.target.value);
@@ -252,6 +261,8 @@ const [comment, setComment] = useState<string>("");
     
   
       try {
+
+        
         const result = await scheduleAppointment(
           selectedPatient.firstname, 
           selectedPatient.lastname, 
@@ -266,8 +277,10 @@ const [comment, setComment] = useState<string>("");
 
 
           visitType,
+
           
-          visitDate,
+          
+         visitDate,
           scheduleTime,
           urgent,
 
@@ -283,7 +296,8 @@ const [comment, setComment] = useState<string>("");
           comment,
           purpose, 
           consultant,
-          user.email
+          user.email,
+          paymentPolicy
         );
   
         toast.success("Apppointment scheduled successfully", {
@@ -308,6 +322,7 @@ const [comment, setComment] = useState<string>("");
       } catch (err: any) {
         //setErroMessage(err.message);
         setLoading(false);
+        console.log(err);
         toast.error(`${err.message}`, {
           position: "top-right",
           autoClose: 5000,
@@ -322,6 +337,13 @@ const [comment, setComment] = useState<string>("");
       }
     }
   
+    useEffect(() => {
+      if (selectedPatient?.sponsor) {
+        setPaymentPolicy(
+          selectedPatient.sponsor === "Self Sponsor" ? "cash" : "claims"
+        );
+      }
+    }, [selectedPatient?.sponsor]);
 
 
   return (
@@ -394,7 +416,7 @@ const [comment, setComment] = useState<string>("");
                               onChange={handleSearchChange}
                               value={query}
                               className="w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              placeholder="Search UPI, Card Number or Surname"
+                              placeholder="Search UPI, Card Number or Surname"required
 
                             />
 
@@ -697,11 +719,14 @@ const [comment, setComment] = useState<string>("");
                             <div className="flex space-x-4">
                               <div className="space-y-2">
                                 <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
-                                  Weight
+                                  Weight <span className="xs">(kg)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="weight"
+                                  min="2"   
+                                  max="300" 
+                                  step="0.1" 
                                   onChange={handleWeightChange}
                                   value={weight}
                                   className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -710,10 +735,13 @@ const [comment, setComment] = useState<string>("");
 
                               <div className="space-y-2">
                                 <label htmlFor="height" className="block text-sm font-medium text-gray-700">
-                                  Height
+                                  Height <span className="xs">(cm)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
+                                  min="50"   
+                                  max="300" 
+                                  step="0.1" 
                                   id="height"
                                   onChange={handleHeightChange}
                                   value={height}
@@ -723,41 +751,48 @@ const [comment, setComment] = useState<string>("");
 
                               <div className="space-y-2">
                                 <label htmlFor="bloodPressure" className="block text-sm font-medium text-gray-700">
-                                  Blood Pressure
+                                  Blood Pressure <span className="xs">(mmHg)</span>
                                 </label>
                                 <input
                                   type="text"
                                   id="bloodPressure"
                                   onChange={handleBloodPressureChange}
                                   value={bloodPressure}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  placeholder="e.g., 120/80"
+                                  className="px-3 py-2  border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
 
                               <div className="space-y-2">
                                 <label htmlFor="temperature" className="block text-sm font-medium text-gray-700">
-                                  Temperature
+                                  Temperature <span className="xs">(°C)</span>
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="temperature"
+                                  min="30" 
+                                  max="45" 
+                                  step="0.1"
                                   onChange={handleTemperatureChange}
                                   value={temperature}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 border w-32 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
 
                               <div className="space-y-2">
                                 <label htmlFor="pulseRate" className="block text-sm font-medium text-gray-700">
-                                  Pulse Rate
+                                  Pulse Rate <span className="xs">(bpm)</span>
 
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="pulseRate"
+                                  min="30" 
+                                  max="220" 
+                                  step="1"
                                   onChange={handlePulseRateChange}
                                   value={pulseRate}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 w-32 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
                             </div>
@@ -775,21 +810,50 @@ const [comment, setComment] = useState<string>("");
 
                       {/*  */}
 
+                      
+
 
                       <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-6">
 
-                        <div className="space-y-2">
-                          {/* <label
-    htmlFor="firstname"
-    className="block text-sm font-medium text-gray-700"
-  >
-    Billable </label>  */}
+                        {/* <div className="space-x-2">
+             
 
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input onChange={handleBillableChange} checked={billable} type="checkbox" className="sr-only peer" />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable Billing</span>
                           </label>
+
+
+                        </div> */}
+
+
+
+                        <div className="space-x-2">
+                       
+
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            
+
+                           
+                            <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Payment Policy</span>
+                          </label>
+
+
+
+
+                          
+
+                          <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            onChange={handlePaymentPolicyChange}
+                            value={paymentPolicy}
+                            required
+                          >
+                            <option value=""></option>
+                            <option value="cash">Cash</option>
+                            <option value="claims">Claims</option>
+                          </select>
 
 
                         </div>

@@ -11,7 +11,7 @@ import { changePassword } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
 // import { getRegisteredPatients } from "../services/patientService";
-import { getAppointments } from "../services/appointment";
+import { cancelAppointment, getAppointments } from "../services/appointment";
 
 const Appointment = (): JSX.Element => {
   const navigate = useNavigate();
@@ -26,6 +26,8 @@ const Appointment = (): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const[appointments, setAppointments] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
  
   useEffect(() => {
     // Load user data from localStorage if available on initial render
@@ -33,7 +35,7 @@ const Appointment = (): JSX.Element => {
       setEmail(user.email);
       fetchScheduledAppointment();
     }
-  }, [user]);
+  }, [user, currentPage]);
 
   
 
@@ -54,8 +56,10 @@ async function fetchScheduledAppointment(){
     try {
       
       
-     const result =  await getAppointments();
+     const result =  await getAppointments(currentPage);
        setAppointments(result.appointments);
+       setTotalPages(result.totalPages);
+      //  setCurrentPage(result.currentPage);
      
     } catch (err:any) {
             //setErroMessage(err.message);
@@ -89,6 +93,46 @@ async function fetchScheduledAppointment(){
   const toggleDropdown = (index:any) => {
     setVisibleDropdownIndex((prevIndex) => (prevIndex === index ? null : index));
   };
+
+
+  const [showModal, setShowModal] = useState(false);
+  const [cancelledSelected, setCancelledSelected] = useState<string>("");
+
+  const handleCancelAppointment = async () => {
+    try {
+      // Call your cancel appointment service here
+      await cancelAppointment(cancelledSelected);
+      toast.success("Appointment cancelled successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+      setShowModal(false);
+      fetchScheduledAppointment(); // Refresh the appointments list
+    } catch (err: any) {
+      toast.error(`${err.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  };
+
+
+
+
   return (
     <>
       <div className="flex flex-no-wrap">
@@ -116,10 +160,10 @@ async function fetchScheduledAppointment(){
                         Schedule Appointment
                         </Link>
 
-                        <button type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                        {/* <button type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                         <span className="pr-4"><i className="fa fa-upload"></i></span>
                        Import Appointment
-                        </button>
+                        </button> */}
                             </div>
             </div>
 
@@ -202,8 +246,8 @@ async function fetchScheduledAppointment(){
             <tr>
                 <th scope="col" className="p-4">
                     <div className="flex items-center">
-                        <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                        <label  className="sr-only">checkbox</label>
+                        {/* <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        <label  className="sr-only">checkbox</label> */}
                     </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -222,6 +266,16 @@ async function fetchScheduledAppointment(){
                 <th scope="col" className="px-6 py-3">
                     Consultant
                 </th>
+
+                <th scope="col" className="px-6 py-3 w-36">
+                    Billing
+                </th>
+
+
+
+                <th scope="col" className="px-6 py-3">
+                    Status
+                </th>
                
                 <th scope="col" className="px-6 py-3">
                     Action
@@ -237,8 +291,8 @@ async function fetchScheduledAppointment(){
                         <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td className="w-4 p-4">
                     <div className="flex items-center">
-                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                        <label  className="sr-only">checkbox</label>
+                        {/* <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        <label  className="sr-only">checkbox</label> */}
                     </div>
                 </td>
 
@@ -251,7 +305,7 @@ async function fetchScheduledAppointment(){
               
                 
                 <td className="px-6 py-4">
-                   {appoint.firstname}  - {appoint.lastname}
+                {appoint.firstname + ' ' + appoint.lastname + ' - ' + appoint.upi}
                 </td>
                 <td className="px-6 py-4">
                     {appoint.purpose}
@@ -259,6 +313,24 @@ async function fetchScheduledAppointment(){
 
                 <td className="px-6 py-4">
                     {appoint.consultant}
+                </td>
+
+                <td className="px-6 py-4 w-36">
+                   {
+                    appoint.is_billed ? <span className="bg-green-500 text-white rounded-lg text-xs px-2 ">Billed</span> : <span className="bg-gray-600 text-white rounded-lg text-xs px-2">Not Billed</span>
+                   }
+                </td>
+
+                <td className="px-6 py-4">
+                    {appoint.status === null ? (
+                      <span className="text-amber-500">Awaiting Consultation</span>
+                    ) : appoint.status === "consulted" ? (
+                      <span className="text-green-500">Consulted</span>
+                    ) : appoint.status === "cancelled" ? (
+                      <span className="text-red-500">Cancelled</span>
+                    ) : (
+                      <span>{appoint.status}</span>
+                    )}
                 </td>
                
                 {/* <td className="flex items-center px-6 py-4">
@@ -304,16 +376,45 @@ async function fetchScheduledAppointment(){
                       </Link>
                     </li>
 
-                   
+                    {!appoint.is_billed &&
                     <li>
+                    <Link
+                       to={`/appointment/billing`}
+                       state={{
+                        appointment:appoint
+                      }}
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Billing
+                    </Link>
+                  </li>
+
+                    }
+
+                   
+                    {/* <li>
                       <Link
                         to=''
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Trash
+                        Cancel
                       </Link>
+                    </li> */}
+
+
+                      {user && user.role == "Receptionist" && 
+                    <li>
+                      <button
+                        onClick={() => {
+                          setCancelledSelected(appoint.uuid);
+                          setShowModal(true);
+                        }}
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Cancel
+                      </button>
                     </li>
-                    
+                }
                     
                   </ul>
                 </div>
@@ -332,6 +433,36 @@ async function fetchScheduledAppointment(){
        
         </tbody>
     </table>
+
+    {/* Pagination Controls */}
+    <div className="flex justify-center mt-4">
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          Previous
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            className={`px-4 py-2 mx-1 ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"} rounded`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          Next
+        </button>
+      </div>
+    
 </div>
 </div>
 
@@ -340,7 +471,28 @@ async function fetchScheduledAppointment(){
 </div>
 
 
-
+{showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-cyan-800 p-6 rounded shadow-lg">
+            <h2 className="text-lg font-semibold mb-4 text-white">Cancel Appointment</h2>
+            <p className="text-gray-100">Are you sure you want to cancel this appointment? {cancelledSelected}</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded mr-2"
+                onClick={() => setShowModal(false)}
+              >
+                No
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded"
+                onClick={handleCancelAppointment}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
               {/* end of table content */}

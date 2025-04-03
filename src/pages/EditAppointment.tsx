@@ -147,8 +147,8 @@ async function fetchUniqueAppointment(){
     try {
 
 
-      const result = await getAppointments();
-      setAppointments(result.appointments);
+      // const result = await getAppointments();
+      // setAppointments(result.appointments);
 
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -670,7 +670,7 @@ uuid
                               onChange={handleDateChange}
                               value={visitDate}
                               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              placeholder="Search UPI, Card Number or Surname"
+                              min={new Date().toISOString().split("T")[0]}
 
                             />
                           </label>
@@ -762,8 +762,12 @@ uuid
                                   Weight
                                 </label>
                                 <input
-                                  type="text"
-                                  id="weight"
+                                   type="number"
+                                   id="weight"
+                                   min="2"   
+                                   max="300" 
+                                   step="0.1" 
+                                  
                                   onChange={handleWeightChange}
                                   value={weight}
                                   className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -775,7 +779,10 @@ uuid
                                   Height
                                 </label>
                                 <input
-                                  type="text"
+                                   type="number"
+                                   min="50"   
+                                   max="300" 
+                                   step="0.1" 
                                   id="height"
                                   onChange={handleHeightChange}
                                   value={height}
@@ -803,11 +810,14 @@ uuid
                                 </label>
 
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="pulseRate"
+                                  min="30" 
+                                  max="220" 
+                                  step="1"
                                   onChange={handlePulseRateChange}
                                   value={pulseRate}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 w-32 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                               
                                 />
                               </div>
@@ -817,11 +827,14 @@ uuid
                                   Temperature
                                 </label>
                                 <input
-                                  type="text"
+                                  type="number"
                                   id="temperature"
+                                  min="30" 
+                                  max="45" 
+                                  step="0.1"
                                   onChange={handleTemperatureChange}
                                   value={temperature}
-                                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                  className="px-3 py-2 w-32 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
 

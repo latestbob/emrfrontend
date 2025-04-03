@@ -377,6 +377,8 @@ const AddMember = (): JSX.Element => {
                       value={dob}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder=""
+                      max={new Date().toISOString().split("T")[0]}
+                      required
                     />
                   </div>
 
@@ -529,6 +531,8 @@ const AddMember = (): JSX.Element => {
                         <option value="Endocrinologist">Endocrinologist</option>
                         <option value="Oncologist">Oncologist</option>
                         <option value="Radiologist">Radiologist</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Microbiologist">Microbiologist</option>
                         <option value="Anesthesiologist">
                           Anesthesiologist
                         </option>

@@ -17,7 +17,7 @@ import { getEncounterByBillingStatus } from "../services/encounterService";
 import moment from "moment";
 import { spawn } from "child_process";
 
-const Encounters = (): JSX.Element => {
+const Investigations = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -372,7 +372,7 @@ const Encounters = (): JSX.Element => {
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Encounter Management" />
+          <Header title="Investigation Request" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
             <div className="flex bg-cyan-900 px-10 py-5 justify-between items-center rounded">
@@ -506,29 +506,31 @@ const Encounters = (): JSX.Element => {
                               {serve.billing_officer}
                             </td>
                             <td className="px-6 py-4 w-64 text-xs">
-                              {serve.investigations.length > 0 && (
-                                <span
-                                  onClick={() =>
-                                    handleInvestigationModalChange(index)
-                                  } // Pass the row index
-                                  className="text-xs cursor-pointer bg-teal-700 text-white px-1 rounded"
-                                >
-                                  has investigations
-                                </span>
-                              )}
+                              {user.role == "Lab Technician" &&
+                                serve.investigations.length > 0 && (
+                                  <span
+                                    onClick={() =>
+                                      handleInvestigationModalChange(index)
+                                    } // Pass the row index
+                                    className="text-xs cursor-pointer bg-teal-700 text-white px-1 rounded"
+                                  >
+                                    has investigations
+                                  </span>
+                                )}
                               <br />
                               <br />
 
-                              {serve.imaging.length > 0 && (
-                                <span
-                                  onClick={() =>
-                                    handleImagingModalChange(index)
-                                  }
-                                  className="text-xs bg-blue-400 text-white mt-55 px-1 rounded cursor-pointer"
-                                >
-                                  has imaging
-                                </span>
-                              )}
+                              {user.role == "Radiologist" &&
+                                serve.imaging.length > 0 && (
+                                  <span
+                                    onClick={() =>
+                                      handleImagingModalChange(index)
+                                    }
+                                    className="text-xs bg-blue-400 text-white mt-55 px-1 rounded cursor-pointer"
+                                  >
+                                    has imaging
+                                  </span>
+                                )}
                               <br />
                               <br />
 
@@ -553,26 +555,38 @@ const Encounters = (): JSX.Element => {
                               )}
                             </td>
 
-                            {activeTab === "billed" && (
-                              <td className="px-6 py-3 w-72 text-xs">
-                                {serve.imaging.some(
-                                  (inv: Investigation) =>
-                                    inv.has_result === "confirmed"
-                                ) ||
-                                serve.investigations.some(
-                                  (inv: Investigation) =>
-                                    inv.has_result === "confirmed"
-                                ) ? (
-                                  <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
-                                    some result(s) added
-                                  </span>
-                                ) : (
-                                  <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
-                                    awaiting results
-                                  </span>
-                                )}
-                              </td>
-                            )}
+                            {activeTab === "billed" &&
+                              (user.role == "Radiologist" ? (
+                                <td className="px-6 py-3 w-72 text-xs">
+                                  {serve.imaging.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ? (
+                                    <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                                      has imaging result(s)
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                                      awaiting results
+                                    </span>
+                                  )}
+                                </td>
+                              ) : (
+                                <td className="px-6 py-3 w-72 text-xs">
+                                  {serve.investigations.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ? (
+                                    <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                                      has investigation result(s)
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                                      awaiting results
+                                    </span>
+                                  )}
+                                </td>
+                              ))}
 
                             <td className="px-6 py-4 w-32 text-xs">
                               <button
@@ -595,44 +609,42 @@ const Encounters = (): JSX.Element => {
                                   className="py-2 text-sm text-gray-700 dark:text-gray-200"
                                   aria-labelledby="dropdownDefaultButton"
                                 >
-                                  <li>
-                                    {serve.status === "billed" ? (
-                                      <button className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                        Generate Receipt
-                                      </button>
-                                    ) : (
-                                      <Link
-                                        to={`/encounter/billing/${serve.uuid}`}
-                                        state={{
-                                          investigations: serve.investigations,
-                                          imaging: serve.imaging,
-                                          otherservices: serve.otherservices,
-                                          patient: serve.patient,
-                                        }}
-                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                      >
-                                        Billing
-                                      </Link>
-                                    )}
-                                  </li>
-                                  {
-                                    user.role == "Receptionist" && 
+                                  {serve.status === "billed" ? (
                                     <li>
-                                    <Link
-                                      to={`/opd/results/${serve.uuid}`}
-                                      state={{
-                                        investigations: serve.investigations,
-                                        imaging: serve.imaging,
-                                        otherservices: serve.otherservices,
-                                        patient: serve.patient,
-                                      }}
-                                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >
-                                      View Results
-                                    </Link>
-                                  </li>
-                                  }
-                                 
+                                      {user.role == "Radiologist" && (
+                                        <Link
+                                          to={`/encounter/${serve.uuid}/result`}
+                                          state={{
+                                            investigations: serve.imaging,
+                                            patient: serve.patient,
+                                            type: "Imaging Investigations",
+                                          }}
+                                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                          Add Results
+                                        </Link>
+                                      )}
+
+                                      {user.role == "Lab Technician" && (
+                                        <Link
+                                          to={`/encounter/${serve.uuid}/result`}
+                                          state={{
+                                            investigations:
+                                              serve.investigations,
+                                            patient: serve.patient,
+                                            type: "Pathology Investigations",
+                                          }}
+                                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                          Add Results
+                                        </Link>
+                                      )}
+                                    </li>
+                                  ) : (
+                                    <span className="text-xs bg-gray-400 text-white px-1 rounded">
+                                      No Action
+                                    </span>
+                                  )}
                                 </ul>
                               </div>
                             </td>
@@ -656,4 +668,4 @@ const Encounters = (): JSX.Element => {
   );
 };
 
-export default Encounters;
+export default Investigations;

@@ -29,6 +29,18 @@ import AddSponsorPage from './pages/AddSponsor';
 import EditSponsorPage from './pages/EditSponsor';
 import Services from './pages/Services';
 import Encounters from './pages/Encounter';
+import EditConsultation from './pages/EditConsultation';
+import Investigations from './pages/Investigations';
+import EncounterBilling from './pages/EncounterBilling';
+import EncounterResults from './pages/EncounterResults';
+import AddEncounterResults from './pages/AddEncounterResults';
+import OPD from './pages/OPD';
+import OPDResults from './pages/OPDResults';
+import OPDViewResult from './pages/OPDViewResult';
+import DownloadResult from './pages/DownloadResult';
+import ProfileEdit from './pages/EditProfile';
+import EditService from './pages/EditService';
+import AppointmentBilling from './pages/AppointmentBilling';
 
 
 const appName:string = process.env.REACT_APP_NAME;
@@ -304,6 +316,133 @@ const routes = [
   component: Encounters,
   pageTile:`${appName} - Encounters`
 },
+
+
+{
+  id:26,
+  path:'/edit-consultation/:uuid',
+  exact:true,
+  auth:true,
+  component: EditConsultation,
+  pageTile:`${appName} - Edit Consultation`
+},
+
+// {
+//   id:27,
+//   path:'/investigations',
+//   exact:true,
+//   auth:true,
+//   component: EditConsultation,
+//   pageTile:`${appName} - Edit Consultation`,
+//   roles: ['lab_technician']
+// }
+{
+  id:27,
+  path:'/investigations',
+  exact:true,
+  auth:true,
+  component: Investigations,
+  pageTile:`${appName} - Investigation Request`
+},
+
+{
+  id:28,
+  path:'/encounter/billing/:uuid',
+  exact:true,
+  auth:true,
+  component: EncounterBilling,
+  pageTile:`${appName} - Encounter Billing`
+},
+
+{
+  id:28,
+  path:'/encounter/:uuid/result',
+  exact:true,
+  auth:true,
+  component: EncounterResults,
+  pageTile:`${appName} - Encounter Results`
+},
+
+
+
+{
+  id:29,
+  path:'/result/:type/:uuid',
+  exact:true,
+  auth:true,
+  component: AddEncounterResults,
+  pageTile:`${appName} - Add Encounter Results`
+},
+
+
+{
+  id:30,
+  path:'/opd',
+  exact:true,
+  auth:true,
+  component: OPD,
+  pageTile:`${appName} - OPD`
+},
+
+{
+  id:31,
+  path:'/opd/results/:uuid',
+  exact:true,
+  auth:true,
+  component: OPDResults,
+  pageTile:`${appName} - OPD Results`
+},
+
+
+{
+  id:32,
+  path:'/opd/view-result/:uuid/:testname',
+  exact:true,
+  auth:true,
+  component: OPDViewResult,
+  pageTile:`${appName} - OPD View Result`
+},
+
+
+{
+  id:33,
+  path:'/download-test-result',
+  exact:true,
+  auth:true,
+  component: DownloadResult,
+  pageTile:`${appName} - OPD Download Result`
+},
+
+
+{
+  id:34,
+  path:'/profile/:uuid',
+  exact:true,
+  auth:true,
+  component: ProfileEdit,
+  pageTile:`${appName} - Edit My Profile`
+},
+
+
+{
+  id:35,
+  path:'/edit-service/:uuid',
+  exact:true,
+  auth:true,
+  component: EditService,
+  pageTile:`${appName} - Edit Service`
+},
+
+
+{
+  id:36,
+  path:'/appointment/billing',
+  exact:true,
+  auth:true,
+  component: AppointmentBilling,
+  pageTile:`${appName} - Appointment Billing`
+},
+
 
 
 

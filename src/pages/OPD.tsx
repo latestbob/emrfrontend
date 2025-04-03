@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { act, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LogoutUser } from "../services/authService";
@@ -17,7 +17,7 @@ import { getEncounterByBillingStatus } from "../services/encounterService";
 import moment from "moment";
 import { spawn } from "child_process";
 
-const Encounters = (): JSX.Element => {
+const OPD = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { setToken, setUser, user } = useAuth();
@@ -127,7 +127,10 @@ const Encounters = (): JSX.Element => {
 
   async function fetchServices() {
     try {
-      const result = await getEncounterByBillingStatus(activeTab);
+      const result = await getEncounterByBillingStatus(
+        activeTab,
+        user.firstname + " " + user.lastname
+      );
       setSetEncounters(result.encounters);
     } catch (err: any) {
       //setErroMessage(err.message);
@@ -372,13 +375,13 @@ const Encounters = (): JSX.Element => {
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Encounter Management" />
+          <Header title="OPD Management" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
             <div className="flex bg-cyan-900 px-10 py-5 justify-between items-center rounded">
               <input
                 className="mt-1 block w-1/2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-200 sm:text-sm"
-                placeholder="Search Services"
+                placeholder="Search Patient"
               />
 
               <div className="buttondiv ">
@@ -453,9 +456,11 @@ const Encounters = (): JSX.Element => {
                         </th>
                       )}
 
-                      <th scope="col" className="px-6 py-3 w-32">
-                        Action
-                      </th>
+                      {activeTab == "billed" && (
+                        <th scope="col" className="px-6 py-3 w-32">
+                          Action
+                        </th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -553,89 +558,102 @@ const Encounters = (): JSX.Element => {
                               )}
                             </td>
 
-                            {activeTab === "billed" && (
-                              <td className="px-6 py-3 w-72 text-xs">
-                                {serve.imaging.some(
-                                  (inv: Investigation) =>
-                                    inv.has_result === "confirmed"
-                                ) ||
-                                serve.investigations.some(
-                                  (inv: Investigation) =>
-                                    inv.has_result === "confirmed"
-                                ) ? (
-                                  <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
-                                    some result(s) added
-                                  </span>
-                                ) : (
-                                  <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
-                                    awaiting results
-                                  </span>
-                                )}
+                            {
+                              activeTab === "billed" && (
+                                <td className="px-6 py-3 w-72 text-xs">
+                                  {serve.imaging.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ||
+                                  serve.investigations.some(
+                                    (inv: Investigation) =>
+                                      inv.has_result === "confirmed"
+                                  ) ? (
+                                    <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                                      some result(s) added
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                                      awaiting results
+                                    </span>
+                                  )}
+                                </td>
+                              )
+
+                              // <td className="px-6 py-3 w-72 text-xs">
+                              //   {serve.investigations.some(
+                              //     (inv: Investigation) =>
+                              //       inv.has_result === "confirmed"
+                              //   ) ? (
+                              //     <span className="text-xs cursor-pointer bg-indigo-700 text-white px-1 rounded">
+                              //       has investigation result(s)
+                              //     </span>
+                              //   ) : (
+                              //     <span className="text-xs cursor-pointer bg-amber-400 text-black px-1 rounded">
+                              //       awaiting results
+                              //     </span>
+                              //   )}
+                              // </td>
+                            }
+
+                            {activeTab == "billed" && (
+                              <td className="px-6 py-4 w-32 text-xs">
+                                <button
+                                  id="dropdownDefaultButton"
+                                  className="text-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+                                  type="button"
+                                  onClick={() => toggleDropdown(index)}
+                                >
+                                  Manage
+                                </button>
+                                <div
+                                  id="dropdown"
+                                  className={`z-10 ${
+                                    visibleDropdownIndex === index
+                                      ? "block"
+                                      : "hidden"
+                                  } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
+                                >
+                                  <ul
+                                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="dropdownDefaultButton"
+                                  >
+                                    <li>
+                                      {
+
+                                      serve.imaging.some(
+                                        (inv: Investigation) =>
+                                          inv.has_result === "confirmed"
+                                      ) ||
+                                      serve.investigations.some(
+                                        (inv: Investigation) =>
+                                          inv.has_result === "confirmed"
+                                      ) ? (
+                                       <Link
+                                          to={`/opd/results/${serve.uuid}`}
+                                          state={{
+                                            investigations:
+                                              serve.investigations,
+                                            imaging: serve.imaging,
+                                            otherservices: serve.otherservices,
+                                            patient: serve.patient,
+                                          }}
+                                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        >
+                                          View Results
+                                        </Link>
+                                      ) : (
+                                        <span className="">
+                                         
+                                        </span>
+                                      )
+                                        
+                                      }
+                                    </li>
+                                  </ul>
+                                </div>
                               </td>
                             )}
-
-                            <td className="px-6 py-4 w-32 text-xs">
-                              <button
-                                id="dropdownDefaultButton"
-                                className="text-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
-                                type="button"
-                                onClick={() => toggleDropdown(index)}
-                              >
-                                Manage
-                              </button>
-                              <div
-                                id="dropdown"
-                                className={`z-10 ${
-                                  visibleDropdownIndex === index
-                                    ? "block"
-                                    : "hidden"
-                                } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
-                              >
-                                <ul
-                                  className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                  aria-labelledby="dropdownDefaultButton"
-                                >
-                                  <li>
-                                    {serve.status === "billed" ? (
-                                      <button className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                        Generate Receipt
-                                      </button>
-                                    ) : (
-                                      <Link
-                                        to={`/encounter/billing/${serve.uuid}`}
-                                        state={{
-                                          investigations: serve.investigations,
-                                          imaging: serve.imaging,
-                                          otherservices: serve.otherservices,
-                                          patient: serve.patient,
-                                        }}
-                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                      >
-                                        Billing
-                                      </Link>
-                                    )}
-                                  </li>
-                                  {
-                                    user.role == "Receptionist" && 
-                                    <li>
-                                    <Link
-                                      to={`/opd/results/${serve.uuid}`}
-                                      state={{
-                                        investigations: serve.investigations,
-                                        imaging: serve.imaging,
-                                        otherservices: serve.otherservices,
-                                        patient: serve.patient,
-                                      }}
-                                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >
-                                      View Results
-                                    </Link>
-                                  </li>
-                                  }
-                                 
-                                </ul>
-                              </div>
-                            </td>
                           </tr>
                         );
                       })}
@@ -656,4 +674,4 @@ const Encounters = (): JSX.Element => {
   );
 };
 
-export default Encounters;
+export default OPD;

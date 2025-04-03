@@ -199,11 +199,32 @@ const { uuid = "" } = useParams();
 //   }
 
   function handleContactEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setContactEmail(e.target.value);
+    
+
+    const value = e.target.value;
+    setContactEmail(value);
+  
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    if (!emailRegex.test(value)) {
+      e.target.setCustomValidity("Please enter a valid email address.");
+    } else {
+      e.target.setCustomValidity(""); // Clear error when valid
+    }
   }
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(e.target.value);
+    let value = e.target.value;
+
+    // Allow only numbers and a single "+" at the start
+    if (!/^\+?[0-9]*$/.test(value)) {
+      e.target.setCustomValidity("Please enter valid phone number.");
+    } else {
+      e.target.setCustomValidity(""); // Reset validation message
+    }
+  
+    setPhone(value);
   }
 
   function handleContactChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -288,7 +309,7 @@ const { uuid = "" } = useParams();
                       value={name}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                      
-                      disabled
+                      
                     />
                   </div>
                   

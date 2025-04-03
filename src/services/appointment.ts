@@ -4,10 +4,12 @@ import axios from "axios";
 
 //get all registered patient
 
-export async function getAppointments() {
+export async function getAppointments(page:number) {
+
+  
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/all`,
+      `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/all?page=${page}&limit=10`,
 
       {
         headers: {
@@ -55,7 +57,8 @@ export async function scheduleAppointment(
         comment:string,
         purpose:string,
          consultant:string,
-         biller:string
+         biller:string,
+         paymentPolicy:string,
         
          
       
@@ -64,7 +67,7 @@ export async function scheduleAppointment(
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/schedule`,
-      { firstname, lastname, upi, email, sponsor, sponsor_plan, office, office_uuid,  visit_type:visitType, visit_date:visitDate, scheduled_time:scheduleTime, is_urgent:urgent, comment, vital_weight:weight, vital_height:height, vital_blood_pressure:bloodPressure, vital_temperature:temperature, vital_pulserate:pulseRate, is_billed:billable, purpose, consultant, biller },
+      { firstname, lastname, upi, email, sponsor, sponsor_plan, office, office_uuid,  visit_type:visitType, visit_date:visitDate, scheduled_time:scheduleTime, is_urgent:urgent, comment, vital_weight:weight, vital_height:height, vital_blood_pressure:bloodPressure, vital_temperature:temperature, vital_pulserate:pulseRate, is_billed:billable, purpose, consultant, biller, payment_policy:paymentPolicy },
 
       {
         headers: {
@@ -86,8 +89,11 @@ export async function scheduleAppointment(
 
 export async function getUniqueAppointment(uuid:string) {
   try {
+
+    
     const response = await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/unique/${uuid}`,
+      
 
       {
         headers: {
@@ -136,6 +142,8 @@ export async function updateAppointment(
   
 ) {
   try {
+
+    
     const response = await axios.put(
       `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/unique/${uuid}`,
       { sponsor, sponsor_plan, purpose, visit_type:visitType, consultant, visit_date:visitDate, scheduled_time:scheduleTime, is_urgent:urgent, comment, vital_weight:weight, vital_height:height, vital_blood_pressure:bloodPressure, vital_temperature:pulseRate, vital_pulserate:pulseRate, is_billed:billable },
@@ -149,7 +157,67 @@ export async function updateAppointment(
     return response.data;
   } catch (error: any) {
     throw new Error(
+
+      
       error.response?.data?.error || "Unable to update appointment"
+    );
+  }
+}
+
+
+//cancel appointment
+
+export async function cancelAppointment(uuid:string) {
+  try {
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/cancel/${uuid}`,
+      {},
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to cancel appointment"
+    );
+  }
+}
+
+
+//bill appoinmtment
+
+export async function billAppoinment(
+  upi:string,
+  uuid:string,
+  amount:number,
+  payment_policy:string,
+  biller:string,
+  sponsor:string,
+  sponsor_plan:string
+        
+         
+      
+      
+) {
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/appointment/billing`,
+      { upi, uuid, amount, payment_policy, biller, sponsor, sponsor_plan },
+
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to bill appointment"
     );
   }
 }

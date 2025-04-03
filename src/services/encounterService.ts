@@ -138,6 +138,47 @@ interface IAllergies {
     
   }
 
+ 
+
+
+export interface ITransaction {
+    patientUPI: string; // ID of the patient associated with the transaction
+    type_uuid: string; // Optional: ID of the encounter (if applicable)
+    date: Date; // Date and time of the transaction
+    totalAmount: number; // Total amount of the transaction
+    paymentStatus: "pending" | "paid" | "failed"; // Payment status
+    paymentMethod: string; // Payment method
+    paymentReference?: string; // Optional: Payment reference or transaction ID
+    services: {
+      // List of selected services
+      investigations: Array<{
+        _id: string; // Service ID
+        name: string; // Service name
+        amount: number; // Service price
+        billingStatus: "pending" | "invoiced" | "billed"; // Billing status
+      }>;
+      imaging: Array<{
+        _id: string;
+        name: string;
+        amount: number;
+        billingStatus: "pending" | "invoiced" | "billed";
+      }>;
+      otherservices: Array<{
+        _id: string;
+        name: string;
+        amount: number;
+        billingStatus: "pending" | "invoiced" | "billed";
+      }>;
+    };
+    createdBy: string; // ID of the user who created the transaction
+    updatedBy?: string; // Optional: ID of the user who last updated the transaction
+    createdAt: Date; // Timestamp for when the transaction was created
+    updatedAt?: Date; // Optional: Timestamp for when the transaction was last updated
+    sponsor:string;
+    sponsor_plan:string;
+    type?:string;
+  }
+
 
 
 export async function addEncounter(
@@ -156,6 +197,7 @@ export async function addEncounter(
     investigations?: InvestigationType[] | null,
     imaging?: ImagingType[] | null,
     otherservices? : ServiceType[] | null,
+    appointment_uuid?: string | null,
 ) {
     try {
         const response = await axios.post(
@@ -175,7 +217,8 @@ export async function addEncounter(
             diagnosis,
             investigations,
             imaging,
-            otherservices
+            otherservices,
+            appointment_uuid
           },
             {
                 headers: {
@@ -194,10 +237,12 @@ export async function addEncounter(
 
 //get encounter by billing status
 
-export async function getEncounterByBillingStatus(status:string) {
+export async function getEncounterByBillingStatus(status:string, consultant?:string) {
     try {
+      const queryParams = consultant ? `?consultant=${encodeURIComponent(consultant)}` : "";
+
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/billing/${status}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/billing/${status}${queryParams}`,
   
         {
           headers: {
@@ -212,3 +257,98 @@ export async function getEncounterByBillingStatus(status:string) {
       );
     }
   }
+
+  //get unique encounter by appointment_uuid
+
+  export async function getUniqueEncounterByAppointmentUuid(appointment_uuid:string) {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/unique/${appointment_uuid}`,
+  
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.error || "Unable to get Encounter"
+      );
+    }
+  }
+
+
+
+  //update encounter / consultation by appointment uuid
+
+  export async function updateEncounterByAppointmentUuid(
+   
+    vitals : IVitalSigns,
+    allergies : IAllergies,
+    comment?: string | null,
+    symptoms? : string[] | null,
+    family_history?: string[] | null,
+    social_history?: string[] | null,
+    diagnosis?: DiagnosisType[] | null,
+    investigations?: InvestigationType[] | null,
+    imaging?: ImagingType[] | null,
+    otherservices? : ServiceType[] | null,
+    appointment_uuid?: string | null,
+) {
+    try {
+        const response = await axios.put(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/encounter/unique/${appointment_uuid}`,
+          {  
+          
+            vitals,
+            allergies,
+         
+            comment,
+         
+            symptoms,
+            family_history,
+            social_history,
+            diagnosis,
+            investigations,
+            imaging,
+            otherservices,
+            appointment_uuid
+          },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.error || "Unable to update Encounter"
+        );
+    }
+}
+
+
+
+//encounter transaction 
+
+export async function createEncounterTransaction(transactionData: ITransaction) {
+  try {
+      const response = await axios.post(
+          `${process.env.REACT_APP_API_ENDPOINT}/api/billing/transaction`,transactionData
+          ,
+          {
+              headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+              },
+          }
+      );
+      return response.data;
+  } catch (error: any) {
+      throw new Error(
+          error.response?.data?.error || "Unable to create billing"
+      );
+  }
+}

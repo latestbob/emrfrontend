@@ -13,6 +13,7 @@ import { Bounce, toast } from "react-toastify";
 // import { getRegisteredPatients } from "../services/patientService";
 import { getAppointments } from "../services/appointment";
 import { getAllBilling } from "../services/billingServices";
+import { getAllTransactions } from "../services/transactionService";
 
 
 
@@ -59,8 +60,8 @@ const BillingRecords = (): JSX.Element => {
         try {
 
 
-            const result = await getAllBilling();
-            setBillings(result.billing);
+            const result = await getAllTransactions();
+            setBillings(result.transactions);
 
         } catch (err: any) {
             //setErroMessage(err.message);
@@ -104,7 +105,7 @@ const BillingRecords = (): JSX.Element => {
                 {/* <!-- Main Content --> */}
                 <div className="flex-1 bg-gray-100 min-h-screen">
                     {/* <!-- Header --> */}
-                    <Header title="Billing Records" />
+                    <Header title="Transactions" />
                     {/* <!-- Content --> */}
                     <main className="p-6 bg-gray-100 flex-1">
 
@@ -115,8 +116,8 @@ const BillingRecords = (): JSX.Element => {
 
 
                                 <button type="button" className="text-white bg-[#3b5998]/90 hover:bg-[#f36e25] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
-                                    <span className="pr-4"><i className="fa fa-upload"></i></span>
-                                    Import Billing Records
+                                    <span className="pr-4"><i className=""></i></span>
+                                    Back
                                 </button>
                             </div>
                         </div>
@@ -157,32 +158,49 @@ const BillingRecords = (): JSX.Element => {
                                                 <tr>
                                                     <th scope="col" className="p-4">
                                                         <div className="flex items-center">
-                                                            <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                            <label className="sr-only">checkbox</label>
+                                                            {/* <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                            <label className="sr-only">checkbox</label> */}
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-6 py-3">
-                                                        EncounterId
+                                                        UUID
                                                     </th>
                                                     <th scope="col" className="px-6 py-3">
                                                         PatientUPI
                                                     </th>
+
+                                                    <th scope="col" className="px-6 py-3">
+                                                        Type
+                                                    </th>
+
+                                            
+
                                                     <th scope="col" className="px-6 py-3">
                                                         Date
                                                     </th>
                                                     <th scope="col" className="px-6 py-3">
                                                         Amount
                                                     </th>
+
                                                     <th scope="col" className="px-6 py-3">
-                                                        Service
+                                                        Payment Policy
                                                     </th>
+                                                 
 
                                                     <th scope="col" className="px-6 py-3">
                                                         Billing Officer
                                                     </th>
 
                                                     <th scope="col" className="px-6 py-3">
-                                                        Billing Officer
+                                                        Status
+                                                    </th>
+
+                                                    <th scope="col" className="px-6 py-3">
+                                                        Sponsor | Plan
+                                                    </th>
+
+                                                    <th scope="col" className="px-6 py-3">
+                                                        Month | Yeaar
                                                     </th>
 
                                                     <th scope="col" className="px-6 py-3">
@@ -199,13 +217,13 @@ const BillingRecords = (): JSX.Element => {
                                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                                 <td className="w-4 p-4">
                                                                     <div className="flex items-center">
-                                                                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                                        <label className="sr-only">checkbox</label>
+                                                                        {/* <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                                        <label className="sr-only">checkbox</label> */}
                                                                     </div>
                                                                 </td>
 
                                                                 <td className="px-6 py-4">
-                                                                    {bill.encounterId}
+                                                                    {bill.type_uuid}
                                                                 </td>
                                                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                                     {bill.patientUPI}
@@ -213,41 +231,64 @@ const BillingRecords = (): JSX.Element => {
 
 
                                                                 <td className="px-6 py-4">
-                                                                    {bill.dateOfService}
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    {bill.amount}
+                                                                    {bill.type}
                                                                 </td>
 
                                                                 <td className="px-6 py-4">
-                                                                    {bill.billing_service}
+                                                                    {bill.date}
+                                                                </td>
+
+
+                                                                <td className="px-6 py-4">
+                                                                    {bill.totalAmount}
                                                                 </td>
 
                                                                 <td className="px-6 py-4">
-                                                                    {bill.billing_officer}
+                                                                    {bill.paymentMethod}
                                                                 </td>
+
+                                                                <td className="px-6 py-4">
+                                                                    {bill.billingOfficer}
+                                                                </td>
+
+
+
+                                                               
 
                                                                 {/* <td className="flex items-center px-6 py-4">
                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
                 </td> */}
                                                                  <td className="px-6 py-4">
-                                                                {bill.status === "pending" && (
+                                                                {bill.paymentStatus === "pending" && (
                                                                     <span className="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                                                                         Pending
                                                                     </span>
                                                                 )}
-                                                                {bill.status === "unpaid" && (
+                                                                {bill.paymentStatus === "unpaid" && (
                                                                     <span className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
                                                                         Unpaid
                                                                     </span>
                                                                 )}
-                                                                {bill.status === "paid" && (
+                                                                {bill.paymentStatus === "paid" && (
                                                                     <span className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                                                                         Paid
                                                                     </span>
                                                                 )}
                                                                 </td>
+
+                                                                <td className="px-6 py-4">
+                                                                    <span className="text-xs">{bill.sponsor} | {bill.sponsor_plan}</span>
+                                                                </td>
+
+                                                                <td className="px-6 py-4 text-sm">
+                                                                    <span className="text-sm">{bill.month} - {bill.year}</span>
+                                                                </td>
+
+
+
+
+
                                                                 <td className="px-6 py-4">
                                                                     <button
                                                                         id="dropdownDefaultButton"
@@ -273,27 +314,12 @@ const BillingRecords = (): JSX.Element => {
                                                                                     to=''
                                                                                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                                                                 >
-                                                                                    View More
+                                                                                    Generate Receipt
                                                                                 </Link>
                                                                             </li>
-                                                                            <li>
-                                                                                <Link
-                                                                                    to=''
-                                                                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                                >
-                                                                                    Update
-                                                                                </Link>
-                                                                            </li>
+                                                                            
 
-
-                                                                            <li>
-                                                                                <Link
-                                                                                    to=''
-                                                                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                                >
-                                                                                    Trash
-                                                                                </Link>
-                                                                            </li>
+                                                                          
 
 
                                                                         </ul>

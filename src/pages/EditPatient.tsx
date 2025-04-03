@@ -224,7 +224,7 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
         
       );
 
-      toast.success("Patient registered successfully", {
+      toast.success("Patient updated successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -295,11 +295,31 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
   }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
+    const value = e.target.value;
+    setEmail(value);
+  
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    if (!emailRegex.test(value)) {
+      e.target.setCustomValidity("Please enter a valid email address.");
+    } else {
+      e.target.setCustomValidity(""); // Clear error when valid
+    }
   }
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(e.target.value);
+    let value = e.target.value;
+
+    // Allow only numbers and a single "+" at the start
+    if (!/^\+?[0-9]*$/.test(value)) {
+      e.target.setCustomValidity("Please enter valid phone number.");
+    } else {
+      e.target.setCustomValidity(""); // Reset validation message
+    }
+  
+    setPhone(value);
+    // setPhone(e.target.value);
   }
 
   function handleDobChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -344,7 +364,16 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
 
 
   function handleNextOfKinPhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setNextOfKinPhone(e.target.value);
+
+    let value = e.target.value;
+
+    // Allow only numbers and a single "+" at the start
+    if (!/^\+?[0-9]*$/.test(value)) {
+      e.target.setCustomValidity("Please enter valid phone number.");
+    } else {
+      e.target.setCustomValidity(""); // Reset validation message
+    }
+    setNextOfKinPhone(value);
   }
 
   function handleNextOfKinAddressChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -713,6 +742,7 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
                       value={phone}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="Enter your Phone Number"
+                      //  pattern="^\+?[0-9]*$"
                       required
                     />
                   </div>
@@ -729,6 +759,7 @@ const [sponsor_plan, setSponsorPlan] = useState<string>("");
                       value={dob}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder=""
+                      max={new Date().toISOString().split("T")[0]}
                     />
                   </div>
 

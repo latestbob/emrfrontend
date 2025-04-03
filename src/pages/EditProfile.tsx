@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/auth";
 import NavBar from "../components/navbar";
 import Header from "../components/header";
 
-import { changePassword, getUniqueNonClinicalStaff, updateUniqueUser } from "../services/userService";
+import { changePassword, getUniqueNonClinicalStaff, updateProfile, updateUniqueUser } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
 import { getRoles } from "../services/roleService";
@@ -17,7 +17,7 @@ import { registerMember } from "../services/authService";
 
 
 
-const EditStaff = (): JSX.Element => {
+const ProfileEdit = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -91,12 +91,12 @@ const [depart, setDepart] = useState<string>("");
     try {
 
       if(uuid){
-        const result = await updateUniqueUser(firstname, lastname, email, phone, uuid, role, depart, dob, gender, address, aos, fee);
+        const result = await updateProfile(firstname, lastname, email, phone, depart, dob, gender, address, uuid);
       }
       
 
       toast.success(
-        "Staff profile updated successfully",
+        "Profile updated successfully",
         {
           position: "top-right",
           autoClose: 5000,
@@ -111,12 +111,7 @@ const [depart, setDepart] = useState<string>("");
       );
       //    alert("Reset Password Link has been shared to your mail");
       setLoading(false);
-      if(type == 'clinical'){
-        navigate("/clinical-staff");
-      }
-      else{
-        navigate("/staff-member");
-      }
+      navigate(-1);
     } catch (err: any) {
       //setErroMessage(err.message);
       setLoading(false);
@@ -214,30 +209,11 @@ function handleLastChange(e: React.ChangeEvent<HTMLInputElement>) {
 
 
 function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-  const value = e.target.value;
-  setEmail(value);
-
-  // Email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailRegex.test(value)) {
-    e.target.setCustomValidity("Please enter a valid email address.");
-  } else {
-    e.target.setCustomValidity(""); // Clear error when valid
-  }
+    setEmail(e.target.value)
 }
 
 function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-  let value = e.target.value;
-
-  // Allow only numbers and a single "+" at the start
-  if (!/^\+?[0-9]*$/.test(value)) {
-    e.target.setCustomValidity("Please enter valid phone number.");
-  } else {
-    e.target.setCustomValidity(""); // Reset validation message
-  }
-
-  setPhone(value);
+    setPhone(e.target.value)
 }
 
 function handleDobChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -319,7 +295,7 @@ async function fetchUniqueNonClinicalStaff(){
         {/* <!-- Main Content --> */}
         <div className="w-full flex flex-col">
           {/* <!-- Header --> */}
-          <Header title="Edit Staff Information" />
+          <Header title="Edit Profile" />
           {/* <!-- Content --> */}
           <main className="p-6 bg-gray-100 flex-1">
             <div className="flex bg-cyan-900 px-10 py-5 justify-end items-center rounded">
@@ -396,6 +372,7 @@ async function fetchUniqueNonClinicalStaff(){
                       type="email"
                       onChange={handleEmailChange}
                       value={email}
+                      disabled
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="Enter your email address"required
                     />
@@ -430,8 +407,7 @@ async function fetchUniqueNonClinicalStaff(){
                       onChange={handleDobChange}
                       value={dob}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    
-                      max={new Date().toISOString().split("T")[0]}
+                      placeholder=""
                     />
                   </div>
 
@@ -455,6 +431,7 @@ async function fetchUniqueNonClinicalStaff(){
                       id=""
                       onChange={handleRoleChange}
                       value={role}
+                      disabled
                       required
                     >
                         <option value="">Assign Role</option>
@@ -685,4 +662,4 @@ async function fetchUniqueNonClinicalStaff(){
   );
 };
 
-export default EditStaff;
+export default ProfileEdit;

@@ -49,23 +49,31 @@ const [email, setEmail] = useState<string>("");
         
     }
 
-    function handlePasswordChange(e:React.ChangeEvent<HTMLInputElement>){
+   
 
-        setPassword(e.target.value)
 
-           // Regular expressions to check password criteria
-           const hasUpperCase = /[A-Z]/.test(password);
-           const hasLowerCase = /[a-z]/.test(password);
-           const hasNumbers = /\d/.test(password);
-           const hasSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
-           const isLengthValid = password.length >= 8;
-       
-           // Check if all criteria are met
-           setIsValid(
-             hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars && isLengthValid
-           );
-    }
-
+      function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+    
+        // Regular expressions to check password criteria
+        const hasUpperCase = /[A-Z]/.test(newPassword);
+        const hasLowerCase = /[a-z]/.test(newPassword);
+        const hasNumbers = /\d/.test(newPassword);
+        const hasSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(
+          newPassword
+        );
+        const isLengthValid = newPassword.length >= 8;
+    
+        // Check if all criteria are met
+        setIsValid(
+          hasUpperCase &&
+            hasLowerCase &&
+            hasNumbers &&
+            hasSpecialChars &&
+            isLengthValid
+        );
+      }
 
 
 

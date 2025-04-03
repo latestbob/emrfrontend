@@ -68,3 +68,57 @@ export async function getServiceByType(type:string) {
         );
       }
     }
+
+    //get otherservices by plan code
+
+    export async function getOtherServicesByPlanCode(plan_code:string) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_ENDPOINT}/api/service/otherservices/${plan_code}`,
+    
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+            },
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        throw new Error(
+          error.response?.data?.error || "Unable to get other services"
+        );
+      }
+    }
+
+
+    //update service
+
+
+export async function updateService(
+    
+  name:string,
+  type:string,
+  price:string,
+  uuid:string
+    
+ 
+ 
+) {
+try {
+const response = await axios.put(
+ `${process.env.REACT_APP_API_ENDPOINT}/api/service/unique/${uuid}`,
+ { name, type, price },
+
+ {
+   headers: {
+     Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+   },
+ }
+);
+return response.data;
+} catch (error: any) {
+throw new Error(
+ error.response?.data?.error || "Unable to update service"
+);
+}
+}

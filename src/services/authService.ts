@@ -71,11 +71,11 @@ export async function verifyToken(token: string) {
 
 //   reset password
 
-export async function resetPassword(email:string, password:string){
+export async function resetPassword(email:string, password:string, token:string){
     try {
         const response = await axios.post(
             `${process.env.REACT_APP_API_ENDPOINT}/api/auth/reset-password`, 
-            { email, password }
+            { email, password , token}
           );
           return response.data;
     } catch (error:any) {
@@ -89,7 +89,13 @@ export async function registerMember(firstname:string, lastname:string, email:st
     try {
         const response = await axios.post(
             `${process.env.REACT_APP_API_ENDPOINT}/api/auth/register`, 
-           { firstname, lastname, email, phone, dob, gender, role, department:depart, address, password:"Famacare123**", office, office_uuid, fee, aos}
+           { firstname, lastname, email, phone, dob, gender, role, department:depart, address, password:"Famacare123**", office, office_uuid, fee, aos},
+
+           {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token logic
+            },
+        }
           );
           return response.data;
     } catch (error:any) {
