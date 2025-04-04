@@ -38,7 +38,7 @@ const Header = ({title}: HeaderProps): JSX.Element => {
             <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
 
             <p className="font-normal text-sm">
-              Current Facility:{user.office}
+              Current Facility: Famacare Diagnostic centre
             </p>
 
             <div className="relative">
