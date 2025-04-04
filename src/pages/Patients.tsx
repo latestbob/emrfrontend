@@ -10,7 +10,7 @@ import Header from "../components/header";
 import { changePassword } from "../services/userService";
 
 import { Bounce, toast } from "react-toastify";
-import { getRegisteredPatients } from "../services/patientService";
+import { getPaginatedRegisteredPatients, getRegisteredPatients } from "../services/patientService";
 
 const Patient = (): JSX.Element => {
   const navigate = useNavigate();
@@ -25,6 +25,8 @@ const Patient = (): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [patients, setPatients] = useState<any[]>([]);
+   const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     // Load user data from localStorage if available on initial render
@@ -32,7 +34,7 @@ const Patient = (): JSX.Element => {
       setEmail(user.email);
       fetchRegisteredPatient();
     }
-  }, [user]);
+  }, [user, currentPage]);
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {}
 
@@ -116,8 +118,10 @@ const Patient = (): JSX.Element => {
 
   async function fetchRegisteredPatient() {
     try {
-      const result = await getRegisteredPatients();
+      const result = await getPaginatedRegisteredPatients(currentPage);
       setPatients(result.patients);
+      setTotalPages(result.totalPages);
+
     } catch (err: any) {
       //setErroMessage(err.message);
 
@@ -507,6 +511,35 @@ const Patient = (): JSX.Element => {
                           })}
                       </tbody>
                     </table>
+
+                    {/* Pagination Controls */}
+    <div className="flex justify-center mt-4">
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          Previous
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            className={`px-4 py-2 mx-1 ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"} rounded`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          Next
+        </button>
+      </div>
                   </div>
                 </div>
 

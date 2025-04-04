@@ -24,6 +24,26 @@ export async function getAllSponsors() {
 }
 
 
+//paginate all sponsors
+export async function getPaginatedSponsors(page: number, limit: number = 10) {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/sponsor/fetch-paginated?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to get sponsors"
+    );
+  }
+}
+
+
 
 // add new sponsor
 

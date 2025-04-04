@@ -23,6 +23,27 @@ export async function getRegisteredPatients() {
   }
 }
 
+//get paginated patients
+
+export async function getPaginatedRegisteredPatients(page: number) {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/patient/fetch-paginated?page=${page}&limit=50`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Unable to get registered patients"
+    );
+  }
+}
+
+
 interface IAllergies {
   drugs: string[];  // List of drug allergies
   food: string[];   // List of food allergies
